@@ -7,6 +7,37 @@ static bool compareGrades(monomio a, monomio b)
 	return (a.get_grade() > b.get_grade());
 }
 
+
+void printer2(vector<monomio> ecuacion, string result, string type_answer)
+{
+	int frac_pos, res_length, denominator_length, radicand = 0, written_characters;
+	res_length = result.length();
+	frac_pos = result.find("/");
+	if (frac_pos)
+	{
+		cout << endl << string(type_answer.length(), ' ');
+		denominator_length = res_length - frac_pos - 1;
+		for (int i = 0; i < frac_pos; i++)
+		{
+			if (result[i] == '|')
+			{
+				cout << "√";
+				radicand = i + 1;
+			}
+			else
+				cout << result[i];
+		}
+		cout << endl;
+		written_characters = (radicand - 1) + (frac_pos + 1 - radicand) ;
+		cout << type_answer;
+		for (int i = 0; i < written_characters; i++)
+			cout << "―";
+		cout << endl << string(type_answer.length(), ' ');
+		cout << string(written_characters / 2 - denominator_length / 2, ' ') << result.substr(frac_pos + 1, res_length) << endl;
+	}
+}
+
+
 int main(int argc, char **argv) {
 
 	vector<monomio> expresiones;
@@ -47,7 +78,8 @@ int main(int argc, char **argv) {
 	sort(expresiones.begin(), expresiones.end(), compareGrades);
 	result = solve(&expresiones);
 	printf("Expresion reducida\n");
-	printer(expresiones, result);
+	printer2(expresiones, result[0], "Solucion 1: ");
+	printer2(expresiones, result[1], "Solucion 2: ");
 	//if (result)
 	//	delete(result);
 }

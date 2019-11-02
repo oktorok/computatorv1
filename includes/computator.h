@@ -8,7 +8,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <vector>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+
+#define SQR_ERR 0.001
 
 using namespace std;
 
@@ -74,4 +76,6 @@ public:
 vector<monomio> parsing(char *expresion);
 string *solve(vector<monomio> *);
 void printer(vector<monomio>, string *);
+float mySqrt(float num);
+float myPow(float base, int exponent);
 #endif

@@ -18,41 +18,6 @@ static void solv_first_grade(vector<monomio> *ecuacion, string *result)
 	result[0] = ss.str();
 }
 
-static float mySqrt(float a)
-{
-	float result = 1;
-	bool imaginary = false;
-
-		imaginary = true;
-	while (result * result < a)
-		result++;
-	if (result * result == a)
-	{
-		if (imaginary)
-			result *= -1;
-		return (result);
-	}
-	else
-		return (a);
-}
-
-static float myPow(float base, int exponent)
-{
-	float result = 1;
-	if (base == 0)
-		return (0);
-	else if (exponent == 0)
-		return (1);
-	for (int i = 0; i < exponent; i++)
-		result *= base;
-	return (result);
-}
-
-//static void imaginary_solution(vector<monomio> *ecuacion, float *result, float radicando)
-//{
-//	return (sqrt);
-//}
-
 static void reduce_fraction(int *numerador, int *denominador)
 {
 	int prime = 2;
@@ -90,14 +55,22 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 	switch (ecuacion->size())
 	{
 	case 2:
-			if (!(a = (*ecuacion)[0].value))
-					a = (*ecuacion)[0].frac_value;
-			if (!(b = (*ecuacion)[1].value))
-					b = (*ecuacion)[1].frac_value;
+		if (!(a = (*ecuacion)[0].value))
+			a = (*ecuacion)[0].frac_value;
+		if (!(b = (*ecuacion)[1].value))
+			b = (*ecuacion)[1].frac_value;
 
 		if ((*ecuacion)[1].get_grade() == 0)
 		{
-			ss << mySqrt(-b / a);
+			if (-b / a < 0)
+			{
+				if (-b / a == -1)
+					ss << "i";
+				else
+					ss << "i|" << b / a ;
+			}
+			else
+				ss << mySqrt(-b / a);
 			(*result)[0] = ss.str();
 			(*result)[1] =  "-" + (*result)[0];
 		}
@@ -109,20 +82,21 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 		break;
 		
 	case 3:
-			if (!(a = (*ecuacion)[0].value))
-					a = (*ecuacion)[0].frac_value;
-			if (!(b = (*ecuacion)[1].value))
-					b = (*ecuacion)[1].frac_value;
-			if (!(c = (*ecuacion)[2].value))
-					c = (*ecuacion)[2].frac_value;
-
+		if (!(a = (*ecuacion)[0].value))
+			a = (*ecuacion)[0].frac_value;
+		if (!(b = (*ecuacion)[1].value))
+			b = (*ecuacion)[1].frac_value;
+		if (!(c = (*ecuacion)[2].value))
+			c = (*ecuacion)[2].frac_value;
+		
 		radicando = myPow(b, 2) - 4 * a * c;
 		if (radicando < 0)
 		{
-			ss << -b << "+i√" << radicando << "/" << 2 * a;
+			radicando *= -1;
+			ss << -b << "+i|" << radicando << "/" << 2 * a;
 			(*result)[0] = ss.str();
 			ss.str("");
-			ss << -b << "-i√" << radicando << "/" << 2 * a;
+			ss << -b << "-i|" << radicando << "/" << 2 * a;
 			(*result)[1] = ss.str();
 		}
 		else
@@ -131,10 +105,10 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 			denominador = 2 * a;
 			if (c == radicando)
 			{
-					ss << -b << "+" << "√" << radicando << "/" << 2 * a;
+					ss << -b << "+" << "|" << radicando << "/" << 2 * a;
 					(*result)[0] = ss.str();
 					ss.str("");
-					ss << -b << "-" << "√" << radicando << "/" << 2 * a;
+					ss << -b << "-" << "|" << radicando << "/" << 2 * a;
 					(*result)[1] = ss.str();
 					break;
 			}

@@ -1,11 +1,13 @@
 NAME = computator
-CPPFLAGS = -Wall -Wextra -Werror
+#CPPFLAGS = -Wall -Wextra -Werror
 CC = g++
 
 SRC =	main.cpp \
 	parsing.cpp \
 	solve.cpp \
-	printer.cpp
+	printer.cpp \
+	myPow.cpp \
+	mySqrt.cpp
 SRC_DIR = src/
 
 INCLUDES = computator.h
