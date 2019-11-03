@@ -1,16 +1,24 @@
 #include "computator.h"
 
-static void solv_first_grade(vector<monomio> *ecuacion, string *result)
+static void solv_first_grade(vector<monomio> *ecuacion, string *result, vector<string> *steps)
 {
 	float a, b;
 	stringstream ss;
 
+	
 	a = (*ecuacion)[0].value;
 	if (!a)
 			a = (*ecuacion)[0].frac_value;
 	b = (*ecuacion)[1].value;
 	if (!b)
 			b = (*ecuacion)[1].frac_value;
+
+	ss << a << (*ecuacion)[0].get_variable() << " = " << -b;
+	steps->push_back(ss.str());
+	ss.str("");
+	ss << (*ecuacion)[0].get_variable() << " = " << -b << " / " << a;
+	steps->push_back(ss.str());	
+	ss.str("");
 	if (b / a)
 		ss << (-1) * b / a;
 	else
@@ -18,7 +26,24 @@ static void solv_first_grade(vector<monomio> *ecuacion, string *result)
 	result[0] = ss.str();
 }
 
-static void reduce_fraction(int *numerador, int *denominador)
+static float float_mod(float a, float b)
+{
+	float mod; 
+	if (a < 0) 
+		mod = -a; 
+	else
+		mod = a; 
+	if (b < 0) 
+		b = -b; 
+	while (mod >= b) 
+		mod = mod - b; 
+	if (a < 0) 
+		return -mod; 
+
+	return mod; 
+} 
+
+static void reduce_fraction(float *numerador, float *denominador)
 {
 	int prime = 2;
 	int sign1 = 1, sign2 = 1; 
@@ -35,7 +60,7 @@ static void reduce_fraction(int *numerador, int *denominador)
 	}
 	while (*numerador >= prime * prime && *denominador >= prime * prime)
 	{
-		if (!(*numerador % prime) && !(*denominador % prime))
+		if (!float_mod(*numerador, prime) && !float_mod(*denominador, prime))
 		{
 			*numerador /= prime;
 			*denominador /= prime;
@@ -47,11 +72,11 @@ static void reduce_fraction(int *numerador, int *denominador)
 	*denominador *= sign2;
 }
 
-static void solv_second_grade(vector<monomio> *ecuacion, string **result)
+static void solv_second_grade(vector<monomio> *ecuacion, string **result, vector<string> *steps)
 {
-	float a, b, c, radicando;
+	float a, b, c, radicando, numerador, denominador;
 	stringstream ss;
-	int numerador, denominador, i = -1;
+	int i = -1;
 	switch (ecuacion->size())
 	{
 	case 2:
@@ -77,7 +102,7 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 		else
 		{
 			(*result)[0] = "0";
-			solv_first_grade(ecuacion, *result + 1);
+			solv_first_grade(ecuacion, *result + 1, steps);
 		}	
 		break;
 		
@@ -90,6 +115,7 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 			c = (*ecuacion)[2].frac_value;
 		
 		radicando = myPow(b, 2) - 4 * a * c;
+		
 		if (radicando < 0)
 		{
 			radicando *= -1;
@@ -103,7 +129,7 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 		{
 			c = mySqrt(radicando);
 			denominador = 2 * a;
-			if (c == radicando)
+			/*if (c == radicando)
 			{
 					ss << -b << "+" << "|" << radicando << "/" << 2 * a;
 					(*result)[0] = ss.str();
@@ -111,11 +137,11 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 					ss << -b << "-" << "|" << radicando << "/" << 2 * a;
 					(*result)[1] = ss.str();
 					break;
-			}
+					}*/
 			while (++i < 2)
 			{							
 				numerador = -b + c;
-				if (!(numerador % denominador))
+				if (!(float_mod(numerador, denominador)))
 					ss << numerador / denominador;
 				else
 				{
@@ -136,7 +162,7 @@ static void solv_second_grade(vector<monomio> *ecuacion, string **result)
 	}
 }
 
-string *solve(vector<monomio> *ecuacion)
+string *solve(vector<monomio> *ecuacion, vector<string> *steps)
 {
 	string *result;
 
@@ -147,11 +173,11 @@ string *solve(vector<monomio> *ecuacion)
 		break;
 	case 1:
 		result = new string[1];
-		solv_first_grade(ecuacion, result);
+		solv_first_grade(ecuacion, result, steps);
 		break;
 	case 2:
 		result = new string[2];
-		solv_second_grade(ecuacion, &result);
+		solv_second_grade(ecuacion, &result, steps);
 		break;
 	default:
 		result = NULL;

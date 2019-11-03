@@ -11,8 +11,17 @@
 //#include <bits/stdc++.h>
 
 #define SQR_ERR 0.001
+#define SUPERINDEX_2 "\u00B2"
+#define SUPERINDEX_4 "\u2074"
 
 using namespace std;
+
+typedef struct solution_s {
+	bool imaginary;
+	float real_sol;
+	string imaginary_sol;
+	vector<string> steps;
+} solution_t;
 
 class monomio {
 private:
@@ -73,9 +82,11 @@ public:
 				}
 };
 
-vector<monomio> parsing(char *expresion);
-string *solve(vector<monomio> *);
-void printer(vector<monomio>, string *);
-float mySqrt(float num);
-float myPow(float base, int exponent);
+vector<monomio> parsing(string);
+solution_t computatorv1(string);
+string *solve(vector<monomio> *, vector<string> *);
+string printer(vector<monomio>, string *);
+void printer2(string, string, string );
+float mySqrt(float);
+float myPow(float, int);
 #endif

@@ -8,41 +8,13 @@ static bool compareGrades(monomio a, monomio b)
 }
 
 
-void printer2(vector<monomio> ecuacion, string result, string type_answer)
-{
-	int frac_pos, res_length, denominator_length, radicand = 0, written_characters;
-	res_length = result.length();
-	frac_pos = result.find("/");
-	if (frac_pos)
-	{
-		cout << endl << string(type_answer.length(), ' ');
-		denominator_length = res_length - frac_pos - 1;
-		for (int i = 0; i < frac_pos; i++)
-		{
-			if (result[i] == '|')
-			{
-				cout << "√";
-				radicand = i + 1;
-			}
-			else
-				cout << result[i];
-		}
-		cout << endl;
-		written_characters = (radicand - 1) + (frac_pos + 1 - radicand) ;
-		cout << type_answer;
-		for (int i = 0; i < written_characters; i++)
-			cout << "―";
-		cout << endl << string(type_answer.length(), ' ');
-		cout << string(written_characters / 2 - denominator_length / 2, ' ') << result.substr(frac_pos + 1, res_length) << endl;
-	}
-}
-
-
 int main(int argc, char **argv) {
 
 	vector<monomio> expresiones;
+	vector<string> steps;
 	int mon_cuant;
 	string *result;
+	solution_t sol;
 
 	setlocale(LC_ALL, "");
 	if (argc < 2)
@@ -50,6 +22,11 @@ int main(int argc, char **argv) {
 		cout << "No expression found" << endl;
 		return (0);
 	}
+	sol = computatorv1(argv[1]);
+	for (int i=0; i < sol.steps.size(); i++)
+		cout << sol.steps[i] << endl;
+	return 0;
+	/*
 	expresiones = parsing(argv[1]);
 	mon_cuant = expresiones.size();
 	//printf("tengo %i monomios\n", mon_cuant);
@@ -76,10 +53,14 @@ int main(int argc, char **argv) {
 		}
 	}
 	sort(expresiones.begin(), expresiones.end(), compareGrades);
-	result = solve(&expresiones);
-	printf("Expresion reducida\n");
-	printer2(expresiones, result[0], "Solucion 1: ");
-	printer2(expresiones, result[1], "Solucion 2: ");
+	result = solve(&expresiones, &steps);
+	cout << "Expresion reducida" << endl;
+	printer(expresiones, NULL);
+	printer2(expresiones[0].get_variable(), result[0], "Solucion 1: ");
+	if (expresiones[0].get_grade() == 2)
+		printer2(expresiones[0].get_variable(), result[1], "Solucion 2: ");
+	for (int i = 0; i < steps.size(); i++)
+		printer2("X", steps[i], "");
 	//if (result)
-	//	delete(result);
+	//	delete(result);*/
 }

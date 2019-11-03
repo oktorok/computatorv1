@@ -7,7 +7,8 @@ SRC =	main.cpp \
 	solve.cpp \
 	printer.cpp \
 	myPow.cpp \
-	mySqrt.cpp
+	mySqrt.cpp \
+	computatorv1.cpp
 SRC_DIR = src/
 
 INCLUDES = computator.h
