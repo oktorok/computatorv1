@@ -37,7 +37,8 @@ solution_t computatorv1(string ecuacion)
 
 	sol = new solution_t();
 	vector <string> &steps = sol->steps;
-	expresiones = parsing(ecuacion);
+	//expresiones = parsing(ecuacion);
+	expresiones = parsing2(ecuacion);
 	steps.push_back(printer(expresiones, NULL));
 	expresiones = simplify_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));

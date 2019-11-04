@@ -3,12 +3,11 @@ NAME = computator
 CC = g++
 
 SRC =	main.cpp \
-	parsing.cpp \
-	solve.cpp \
-	printer.cpp \
 	myPow.cpp \
 	mySqrt.cpp \
-	computatorv1.cpp
+	computatorv1.cpp \
+	parsing2.cpp \
+	printer.cpp
 SRC_DIR = src/
 
 INCLUDES = computator.h

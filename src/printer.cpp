@@ -8,8 +8,26 @@ string printer (vector<monomio> ecuacion, string *result)
 	string tmp;
 	for (int i = 0; i < mon_cuant; i++)
 	{
+		ss << ecuacion[i].value_string;
+		ss << ecuacion[i].get_variable();
 		grade = ecuacion[i].get_grade();
-		if ((ecuacion[i].value > 0 || ecuacion[i].frac_value > 0) && i != 0)
+		if (grade > 1 && grade < 4)
+		{
+			tmp = SUPERINDEX_2;
+			tmp[1] += grade - 2;
+			ss << tmp;
+		}
+		else if (grade >= 4)
+		{
+			tmp = SUPERINDEX_4;
+			tmp[2] += grade - 4;
+			ss << tmp;
+		}
+		
+	}
+		/*
+		grade = ecuacion[i].get_grade();
+		if ((ecuacion[i].value.l > 0  && i != 0)
 			ss << "+";
 			//printf("+");
 		if (ecuacion[i].get_variable() != "")
@@ -48,7 +66,7 @@ string printer (vector<monomio> ecuacion, string *result)
 			ss << ecuacion[i].value;
 	}
 	ss << "=0" << endl;
-	//printf("=0\n");
+	//printf("=0\n");*/
 	return ss.str();
 }
 

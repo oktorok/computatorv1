@@ -1,6 +1,6 @@
 #include "computator.h"
 
-static int search_value(int *integer, float *fraction, char *expresion, int sign, int equal_side)
+static int search_value(int &integer, float &fraction, string expresion, int sign, int equal_side)
 {
 		int j = 0;
 		int dot = 0;
@@ -11,21 +11,19 @@ static int search_value(int *integer, float *fraction, char *expresion, int sign
 				j++;
 		}
 		if (dot)
-				*fraction = atof(expresion) * sign * equal_side;
+				fraction = stof(expresion) * sign * equal_side;
 		else
-				*integer = atoi(expresion) * sign * equal_side;
+				integer = stoi(expresion) * sign * equal_side;
 		return (j);
 }
 
-vector<monomio> parsing(string expresion2)
+vector<monomio> parsing(string expresion)
 {
-	char *expresion;
-	expresion = (char *)expresion2.c_str();
 	int value = 0, grade = 0, sign = 1, equal_side = 1, tmp_inter = 0;
 	float value_frac = 0, tmp_frac = 0;
 
 	char variable = '\0', last_variable = '\0';
-	int expresion_len = strlen(expresion), i = 0;
+	int expresion_len = expresion.length(), i = 0;
 	vector<monomio> ecuacion;
 	monomio nuevo;
 
@@ -33,14 +31,14 @@ vector<monomio> parsing(string expresion2)
 	{
 		if (!value && isdigit(expresion[i]))
 		{
-			i += search_value(&value, &value_frac, expresion + i, sign, equal_side);
+			i += search_value(value, value_frac, expresion.substr(i), sign, equal_side);
 			sign = 1;
 			if (expresion[i] == '/')
 			{
 				i++;
 				tmp_inter = 0;
 				tmp_frac = 0;
-				i += search_value(&tmp_inter, &tmp_frac, expresion + i, 1, 1);
+				i += search_value(tmp_inter, tmp_frac, expresion.substr(i), 1, 1);
 				if (tmp_inter && value && !(value % tmp_inter))
 				{
 					value /= tmp_inter;
@@ -75,7 +73,7 @@ vector<monomio> parsing(string expresion2)
 				grade = 1;
 			else
 			{
-				grade = atoi(expresion + i);
+				grade = stoi(expresion.substr(i));
 				while (isdigit(expresion[i]))
 					i++;
 			}
