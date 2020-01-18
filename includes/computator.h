@@ -9,7 +9,8 @@
 #include <ctype.h>
 #include <vector>
 #include <cmath>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+#include <string>
 
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
