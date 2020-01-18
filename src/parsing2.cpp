@@ -32,51 +32,83 @@ static int class_character(char a)
 static value_u check_double_long(string str, char &type_var, size_t &j)
 {
 	value_u val;
-	val = (value_u){stol(str, &j)};
-	if (!type_var)
-		type_var = 'l';
 	if (str[j] == '.')
 	{
-		val = (value_u){stod(str, &j)};
+		val.d = stod(str, &j);
 		type_var = 'd';
+	}
+	else if (!type_var)
+	{
+		type_var = 'l';
+		if (isdigit(str[0]) || isdigit(str[1]))
+			val.l = stol(str, &j);
+		else
+		{
+			val.l = 1;
+			j += 1;
+		}
+		cout << str << endl;
+
 	}
 	return val;
 }
 
 static value_u check_division(value_u a, char &type_a, value_u b, char type_b)
 {
+	value_u ret;
 	if (type_a == type_b)
 	{
 		if (type_a == 'd')
 		{
 			if (fmod(a.d, b.d))
+			{
 				type_a = 'd';
+				ret.d = a.d/b.d;
+			}
 			else
+			{
 				type_a = 'l';
-			return (value_u){a.d/b.d};
+				ret.l = a.d/b.d;
+			}
 		}
 		else
 		{
 			if (a.l % b.l)
+			{
 				type_a = 'd';
+				ret.d = a.l/b.l;
+			}
 			else
+			{
 				type_a = 'l';
-			return (value_u){a.d/b.d};
+				ret.l = a.l/b.l;
+			}
 		}
 	}
 	else if (type_a == 'l')
 	{
 		if (fmod(a.l, b.d))
+	       	{
 			type_a = 'd';
+			ret.d = a.l/b.d;
+		}
 		else
+		{
 			type_a = 'l';
-		return (value_u){a.l/b.d};
+			ret.l = a.l/b.d;
+		}
 	}
 	else if (fmod(a.d, b.l))
+	{
 		type_a = 'd';
+		ret.d = a.d/b.l;
+	}
 	else
+	{
 		type_a = 'l';
-	return (value_u){a.d/b.l};
+		ret.l = a.d/b.l;
+	}
+	return ret;
 	
 }
 			    
@@ -87,23 +119,22 @@ static monomio create_monomy(string str)
 
 	if (str == "=")
 	{
-		ret.ini_monomio('=', (value_u){0}, 0, '\0', "");
+		ret.ini_monomio('=', (value_u){0}, -1, '\0', "");
 		return ret;
 	}
 		
 	size_t j = 0, i = 0;
-	int grade;
+	int grade = 0;
 	char variable = '\0', type_val, type_val_tmp;
 	string value_string;
 	value_u val, tmp;
-	cout << str << endl;
 	if (isdigit(str[0]) || str[0] == '-' || str[0] == '+')
 		val = check_double_long(str, type_val, j);
 	else
 	{
-		val = (value_u){0};
+		val = (value_u){1};
 		type_val = 'l';
-	}
+	}	
 	if (str[j] == '/')
 	{
 		i = j;
@@ -121,7 +152,7 @@ static monomio create_monomy(string str)
 	}
 	else if (variable)
 		grade = 1;
-	else
+	else if (!grade)
 		grade = 0;
 	ret.ini_monomio(variable, val, grade, type_val, value_string);
 	return ret;

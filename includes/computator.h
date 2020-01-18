@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <vector>
 #include <cmath>
-//#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
@@ -39,20 +39,26 @@ public:
 	string value_string;
 	char value_type;
 	value_u value;
+	short sign;
+	bool side;
 	
 	monomio()
 	{
 		variable = "";
 		grade = 0;
-		value_string = "";
+		sign = 1;
+		side = true;
 		value_type = 0;
 		value = (value_u){0};
 	}
 	
-	void ini_monomio(char var, union value_u val, int gra, int val_typ, string val_str)
+	void ini_monomio(char var, union value_u val, int gra, int val_typ, char val_sign, bool val_side)
 	{
 		this->value_type = val_typ;
-		this->value_string = val_str;
+		this->sign = 1;
+		if (val_sign == '-')
+			this->sign = -1;
+		this->side = val_side;
 		this->value = val;
 		this->variable = var;
 		this->grade = gra;
@@ -75,13 +81,29 @@ public:
 		return (false);
 	}
 	
-	void sum_monomios(monomio sumando)
+	void sum_monomios(monomio sumando, short side)
 	{
 		char t1 = this->value_type, t2 = sumando.value_type;
-		if (t1 == t2 && t1 == 'i')
-			this->value.l += sumando.value.l;
-		else
-			this->value.d += sumando.value.d;
+		stringstream ss;
+		for (int i=0; i < this->value_string.size();i++)
+		{
+			if (isdigit(this->value_string[i]) && !ss.rdbuf()->in_avail())
+			{
+				ss << this->value_string.substr(0, i);
+				if (t1 == t2 && t1 == 'l')
+				{
+					this->value.l += sumando.value.l * side;
+					ss << this->value.l;
+				}
+				else
+				{
+					this->value.d += sumando.value.d * side;
+					ss << this->value.d;
+				}
+				this->value_string = ss.str();
+				return;
+			}
+		}
 		return ;
 	}
 };

@@ -1,12 +1,5 @@
 #include "computator.h"
 
-//using namespace std;
-
-static bool compareGrades(monomio a, monomio b)
-{
-	return (a.get_grade() > b.get_grade());
-}
-
 
 int main(int argc, char **argv) {
 
@@ -23,6 +16,7 @@ int main(int argc, char **argv) {
 		return (0);
 	}
 	sol = computatorv1(argv[1]);
+	cout << "Solving Steps:" << endl;
 	for (int i=0; i < sol.steps.size(); i++)
 		cout << sol.steps[i] << endl;
 	return 0;
