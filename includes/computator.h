@@ -9,8 +9,7 @@
 #include <ctype.h>
 #include <vector>
 #include <cmath>
-//#include <bits/stdc++.h>
-#include <string>
+#include <bits/stdc++.h>
 
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
@@ -41,24 +40,22 @@ public:
 	char value_type;
 	value_u value;
 	short sign;
-	bool side;
+	short side;
 	
 	monomio()
 	{
 		variable = "";
 		grade = 0;
 		sign = 1;
-		side = true;
+		side = 1;
 		value_type = 0;
 		value = (value_u){0};
 	}
 	
-	void ini_monomio(char var, union value_u val, int gra, int val_typ, char val_sign, bool val_side)
+	void ini_monomio(string var, union value_u val, int gra, int val_typ, short val_sign, short val_side)
 	{
 		this->value_type = val_typ;
-		this->sign = 1;
-		if (val_sign == '-')
-			this->sign = -1;
+		this->sign = val_sign;
 		this->side = val_side;
 		this->value = val;
 		this->variable = var;

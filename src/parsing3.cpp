@@ -41,7 +41,7 @@ static value_u take_value(int &i, string expresion, char &type_var)
 	type_var = 'l';
 	val.l = stol(expresion.substr(i), &i2, 10);
 	i += (int)i2;
-	cout << val.l << endl;
+	//cout << val.l << endl;
 	return val;
 }
 
@@ -53,8 +53,8 @@ static string take_var(int &i, string expresion)
 	while (isalpha(expresion[++j]));
 	var = expresion.substr(i, j - i);
 	//cout << "[" << i << "]" << "[" << j << "]";
-	cout << var << endl;
-	i = j + 1;
+	//cout << var << endl;
+	i = j;
 	return var;
 }
 
@@ -62,35 +62,50 @@ static int take_grade(int &i, string expresion)
 {
 	int grade;
 	size_t i2;
-
+	
+	i++;
 	grade = stoi(expresion.substr(i), &i2, 10);
-	i = (int)i2;
-	cout << grade << endl;
+	i = i + (int)i2;
+	//cout << grade << endl;
 	return grade;
 }
 
 vector<monomio> parsing3(string expresion)
 {
 	vector<monomio> ecuacion;
-	int i = 0, expresion_l = expresion.length(), t, grade;
-	stringstream ss;
-	char sign, type_var;
-	string var;
-        value_u value;
-	bool side;
-	
+	int i = 0, expresion_l = expresion.length(), t, grade = 0;
+	short sign = 1;
+	char type_var = 'l';
+	string var = "";
+        value_u value = value_u{1};
+	short side = 1;
+	monomio tmp;
 	
 	while(i < expresion_l)
 	{
 		t = class_character(expresion[i]);
 		switch (t)
 	       	{
-		case OPERATION:
-			//if (i)
-			//	ecuacion.push_back(monomio().ini_monomio(var, value, grade, type, sign, side));
-			sign = expresion[i++];
-			if (sign != '-')
-				sign = '+';
+		case EQUAL:
+			side = -1;
+		case OPERATION :
+			if (i)
+			{
+				tmp.ini_monomio(var, value, grade, type_var, sign, side);       
+				ecuacion.push_back(tmp);
+			}
+			sign = 1;
+			if (expresion[i++] == '-')
+				sign = -1;
+			grade = 1;
+			type_var = 'l';
+			value = value_u{1};
+			var = "";
+			if (expresion[i - 1] == '=')
+			{
+				tmp.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
+				ecuacion.push_back(tmp);
+			}
 			break;
 		case NUMBER:
 			value = take_value(i, expresion, type_var);
@@ -106,18 +121,22 @@ vector<monomio> parsing3(string expresion)
 			break;
 		}
 	}
+	tmp.ini_monomio(var, value, grade, type_var, sign, side);
+	ecuacion.push_back(tmp);
 	return ecuacion;
 }
 
 int main(void)
 {
 	vector<monomio> a;
-	a = parsing3("34x^2");
+	a = parsing3("x^2 + 2x - 3 = 23");
+	cout << a.size() << endl;
 	for(int i=0; i<a.size(); ++i)
 	{
-		cout << a[i].sign;
+		cout << ((a[i].sign == 1) ? '+' : '-');
 		cout << a[i].value.l;
 		cout << a[i].get_variable();
+		cout << '^' << a[i].get_grade();
 	}
 }
        
