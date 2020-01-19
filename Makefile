@@ -6,7 +6,7 @@ SRC =	main.cpp \
 	myPow.cpp \
 	mySqrt.cpp \
 	computatorv1.cpp \
-	parsing2.cpp \
+	parsing3.cpp \
 	printer.cpp
 SRC_DIR = src/
 

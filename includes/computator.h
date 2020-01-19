@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <vector>
 #include <cmath>
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
 
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
@@ -108,6 +108,7 @@ public:
 
 vector<monomio> parsing(string);
 vector<monomio> parsing2(string);
+vector<monomio> parsing3(string);
 solution_t computatorv1(string);
 string *solve(vector<monomio> *, vector<string> *);
 string printer(vector<monomio>, string *);

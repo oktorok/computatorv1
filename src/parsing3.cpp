@@ -5,7 +5,7 @@
 #define OPERATION 2
 #define CHAR 1
 #define EQUAL 3
-#define SLASH_DOT 4
+#define SLASH 4
 #define POTENCE 5
 #define SPACE 7
 #define ERROR 6
@@ -20,8 +20,8 @@ static int class_character(char a)
 		return OPERATION;
 	else if (a == '=')
 		return EQUAL;
-	else if (a == '/' || a == '.')
-		return SLASH_DOT;
+	else if (a == '/')
+		return SLASH;
 	else if (a == '^')
 		return POTENCE;
 	else if (isspace(a))
@@ -32,14 +32,29 @@ static int class_character(char a)
 
 static value_u take_value(int &i, string expresion, char &type_var)
 {
-	int j = i - 1;
+	int j = i;
 	value_u val;
 	size_t i2;
-	//while (isdigit(expresion[++j]));
-	//if (expresion[j] == '.')
+	bool _float = false;
+	
+	while (isdigit(expresion[j]) || expresion[j] == '.')
+	{
+		j++;
+		if (expresion[j] == '.')
+			_float = true;
+				   
+	}
+	if (_float)
+	{
+		val.d = stod(expresion.substr(i), &i2);
+		type_var = 'd';
+	}
+	else
+	{
+		val.l = stol(expresion.substr(i), &i2, 10);
+		type_var = 'l';
+	}
 	//if (expresion[j] == '/')
-	type_var = 'l';
-	val.l = stol(expresion.substr(i), &i2, 10);
 	i += (int)i2;
 	//cout << val.l << endl;
 	return val;
@@ -77,7 +92,7 @@ vector<monomio> parsing3(string expresion)
 	short sign = 1;
 	char type_var = 'l';
 	string var = "";
-        value_u value = value_u{1};
+        value_u value = (value_u){1};
 	short side = 1;
 	monomio tmp;
 	
@@ -86,9 +101,9 @@ vector<monomio> parsing3(string expresion)
 		t = class_character(expresion[i]);
 		switch (t)
 	       	{
+		case SLASH:
 		case EQUAL:
-			side = -1;
-		case OPERATION :
+		case OPERATION:
 			if (i)
 			{
 				tmp.ini_monomio(var, value, grade, type_var, sign, side);       
@@ -97,14 +112,18 @@ vector<monomio> parsing3(string expresion)
 			sign = 1;
 			if (expresion[i++] == '-')
 				sign = -1;
-			grade = 1;
-			type_var = 'l';
-			value = value_u{1};
+			grade = 0;
 			var = "";
-			if (expresion[i - 1] == '=')
+			if (t == EQUAL)
 			{
+				side = -1;				
 				tmp.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
 				ecuacion.push_back(tmp);
+			}
+			else if (t == SLASH)
+			{
+				tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
+				ecuacion.push_back(tmp);	
 			}
 			break;
 		case NUMBER:
@@ -112,6 +131,7 @@ vector<monomio> parsing3(string expresion)
 			break;
 		case CHAR:
 			var = take_var(i, expresion);
+			grade = 1;
 			break;
 		case SPACE:
 			i++;
@@ -126,17 +146,17 @@ vector<monomio> parsing3(string expresion)
 	return ecuacion;
 }
 
-int main(void)
-{
-	vector<monomio> a;
-	a = parsing3("x^2 + 2x - 3 = 23");
-	cout << a.size() << endl;
-	for(int i=0; i<a.size(); ++i)
-	{
-		cout << ((a[i].sign == 1) ? '+' : '-');
-		cout << a[i].value.l;
-		cout << a[i].get_variable();
-		cout << '^' << a[i].get_grade();
-	}
-}
+// int main(void)
+// {
+// 	vector<monomio> a;
+// 	a = parsing3("x^2 + 2.2x - 3.003/23 = 0.23");
+// 	cout << a.size() << endl;
+// 	for(int i=0; i<a.size(); ++i)
+// 	{
+// 		cout << ((a[i].sign == 1) ? '+' : '-');
+// 		cout << ((a[i].value_type == 'l') ? a[i].value.l : a[i].value.d);
+// 		cout << a[i].get_variable();
+// 		cout << '^' << a[i].get_grade();
+// 	}
+// }
        

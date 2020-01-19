@@ -6,10 +6,34 @@ string printer (vector<monomio> ecuacion, string *result)
 	int grade;
 	stringstream ss;
 	string tmp;
+	bool sign = false;
 	for (int i = 0; i < mon_cuant; i++)
 	{
-		ss << ecuacion[i].value_string;
-		ss << ecuacion[i].get_variable();
+		tmp = ecuacion[i].get_variable();
+		if (tmp == "=" || tmp == "/")
+		{
+			ss << tmp;
+			sign = false;
+			continue;
+		}
+		if (sign || ecuacion[i].sign < 0)
+		{
+			if (ecuacion[i].sign < 0)
+				ss << '-';
+			else
+				ss << '+';
+		}
+		sign = true;
+		if (ecuacion[i].value_type == 'l')
+		{
+			if (ecuacion[i].value.l != 1)
+				ss << ecuacion[i].value.l;
+		}
+		else if ((long)ecuacion[i].value.d != 1)
+		{
+			ss << ecuacion[i].value.d;
+		}
+		ss << tmp;
 		grade = ecuacion[i].get_grade();
 		if (grade > 1 && grade < 4)
 		{
