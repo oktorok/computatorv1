@@ -26,10 +26,10 @@ string printer (vector<monomio> ecuacion, string *result)
 		sign = true;
 		if (ecuacion[i].value_type == 'l')
 		{
-			if (ecuacion[i].value.l != 1)
+			if (ecuacion[i].value.l != 1 || tmp == "")
 				ss << ecuacion[i].value.l;
 		}
-		else if ((long)ecuacion[i].value.d != 1)
+		else if ((long)ecuacion[i].value.d != 1 || tmp == "")
 		{
 			ss << ecuacion[i].value.d;
 		}

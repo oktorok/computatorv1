@@ -91,7 +91,7 @@ vector<monomio> parsing3(string expresion)
 	int i = 0, expresion_l = expresion.length(), t, grade = 0;
 	short sign = 1;
 	char type_var = 'l';
-	string var = "";
+	string var = "", last_var = "";
         value_u value = (value_u){1};
 	short side = 1;
 	monomio tmp;
@@ -104,8 +104,9 @@ vector<monomio> parsing3(string expresion)
 		case SLASH:
 		case EQUAL:
 		case OPERATION:
-			if (i)
+			if (i && last_var != "/")
 			{
+				last_var = var;
 				tmp.ini_monomio(var, value, grade, type_var, sign, side);       
 				ecuacion.push_back(tmp);
 			}
@@ -116,12 +117,14 @@ vector<monomio> parsing3(string expresion)
 			var = "";
 			if (t == EQUAL)
 			{
-				side = -1;				
+				side = -1;
+				last_var = "=";
 				tmp.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
 				ecuacion.push_back(tmp);
 			}
 			else if (t == SLASH)
 			{
+				last_var = "/";
 				tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
 				ecuacion.push_back(tmp);	
 			}

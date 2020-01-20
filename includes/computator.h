@@ -17,18 +17,19 @@
 
 using namespace std;
 
-typedef struct solution_s {
-	bool imaginary;
-	float real_sol;
-	string imaginary_sol;
-	vector<string> steps;
-} solution_t;
-
 union value_u
 {
 	long l;
 	double d;
 };
+
+typedef struct solution_s {
+	bool imaginary;
+	char value_type;
+	value_u real;
+	string imaginary_sol;
+	vector<string> steps;
+} solution_t;
 
 class monomio {
 private:
@@ -66,7 +67,7 @@ public:
 	{
 		return (variable);
 	}
-	
+
 	int get_grade()
 	{
 		return (grade);
@@ -110,7 +111,7 @@ vector<monomio> parsing(string);
 vector<monomio> parsing2(string);
 vector<monomio> parsing3(string);
 solution_t computatorv1(string);
-string *solve(vector<monomio> *, vector<string> *);
+value_u solve(vector<monomio> , vector<string> &, char &);
 string printer(vector<monomio>, string *);
 void printer2(string, string, string );
 float mySqrt(float);
