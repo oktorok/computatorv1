@@ -104,7 +104,7 @@ vector<monomio> parsing3(string expresion)
 		case SLASH:
 		case EQUAL:
 		case OPERATION:
-			if (i && last_var != "/")
+			if (i && (last_var != "/" || t == EQUAL) && last_var != "=")
 			{
 				last_var = var;
 				tmp.ini_monomio(var, value, grade, type_var, sign, side);       

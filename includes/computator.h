@@ -114,6 +114,6 @@ solution_t computatorv1(string);
 value_u solve(vector<monomio> , vector<string> &, char &);
 string printer(vector<monomio>, string *);
 void printer2(string, string, string );
-float mySqrt(float);
+value_u mySqrt(value_u, char &);
 float myPow(float, int);
 #endif

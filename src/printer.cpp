@@ -29,7 +29,7 @@ string printer (vector<monomio> ecuacion, string *result)
 			if (ecuacion[i].value.l != 1 || tmp == "")
 				ss << ecuacion[i].value.l;
 		}
-		else if ((long)ecuacion[i].value.d != 1 || tmp == "")
+		else if (ecuacion[i].value.d != 1 || tmp == "")
 		{
 			ss << ecuacion[i].value.d;
 		}
