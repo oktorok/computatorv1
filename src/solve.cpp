@@ -59,35 +59,42 @@ static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
 	
 }
 
-static value_u solv_first_grade(vector<monomio> ecuacion, vector<string> &steps, char &value_type)
+static void go_div(vector<monomio> &ecuacion)
 {
-	value_u solution;
-	stringstream ss;
-	string t = "00";
+	vector<monomio>::iterator it1;
+	monomio tmp;
+
+	it1 = ecuacion.begin() + ecuacion.size() - 1;
+	ecuacion.insert(it1, ecuacion.back());
+	ecuacion.back().value = ecuacion[0].value;
+	ecuacion.back().value_type = ecuacion[0].value_type;
+	tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
+	ecuacion.insert(it1 + 1, tmp);
+	ecuacion[0].value.l = 1;
+	ecuacion[0].value_type = 'l';
+	//return ecuacion;
+}
+
+static void move_indepterm(vector<monomio> &ecuacion)
+{
 	vector<monomio>::iterator it1;
 
 	it1 = ecuacion.begin() + ecuacion.size() - 3;
 	ecuacion.back() = ecuacion[ecuacion.size() - 3];
 	ecuacion.back().side = -1;
 	ecuacion.back().sign *= -1;
-	ecuacion.erase(it1);
+	ecuacion.erase(it1);	
+}
+
+static value_u solv_first_grade(vector<monomio> ecuacion, vector<string> &steps, char &value_type)
+{
+	value_u solution;
+	stringstream ss;
+
+	move_indepterm(ecuacion);
 	steps.push_back(printer(ecuacion, NULL));
-	if (ecuacion[0].value.l != 1)
-	{
-		t[0] = ecuacion[2].value_type;
-		t[1] = ecuacion[0].value_type;
-		ss << ecuacion[0].get_variable() << "=";
-		if (t == "ll")
-			ss << ecuacion[2].value.l << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.l;
-		else if (t == "dd")
-			ss << ecuacion[2].value.d << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.d;
-		else if (t == "ld")
-			ss << ecuacion[2].value.l << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.d;
-		else
-			ss << ecuacion[2].value.d << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.l;
-		steps.push_back(ss.str());
-		ss.str("");
-	}
+	go_div(ecuacion);
+	steps.push_back(printer(ecuacion,NULL));
 	value_type = ecuacion[0].value_type;
 	solution = check_division(ecuacion[2].value, ecuacion[2].value_type, ecuacion[0].value, value_type);
 	ss << ecuacion[0].get_variable() << "=";
@@ -99,7 +106,7 @@ static value_u solv_first_grade(vector<monomio> ecuacion, vector<string> &steps,
 	else
 	{
 		solution.d *= ecuacion[2].sign * ecuacion[0].sign;
-			ss << solution.d;
+		ss << solution.d;
 	}
 	steps.push_back(ss.str());	
 	return solution;
@@ -111,32 +118,18 @@ static solution_t * solv_second_grade(vector<monomio> ecuacion, vector<string> &
 	stringstream ss;
 	string t = "00";
 	vector<monomio>::iterator it1;
+	monomio tmp;
 	int i = -1;
 	solution_t *solution = new solution_t[2];
 	switch (ecuacion.size())
 	{
 	case 4:
-		it1 = ecuacion.begin() + ecuacion.size() - 3;
-		ecuacion.back() = ecuacion[ecuacion.size() - 3];
-		ecuacion.back().side = -1;
-		ecuacion.back().sign *= -1;
-		ecuacion.erase(it1);
+		move_indepterm(ecuacion);
 		steps.push_back(printer(ecuacion, NULL));
-		t[0] = ecuacion[2].value_type;
-		t[1] = ecuacion[0].value_type;
-		ss << ecuacion[0].get_variable() << ecuacion[0].get_grade() << "=";
-		if (t == "ll")
-			ss << ecuacion[2].value.l << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.l;
-		else if (t == "dd")
-			ss << ecuacion[2].value.d << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.d;
-		else if (t == "ld")
-			ss << ecuacion[2].value.l << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.d;
-		else
-			ss << ecuacion[2].value.d << "/" << ((ecuacion[0].sign < 0) ? "-" : "") << ecuacion[0].value.l;
-		steps.push_back(ss.str());
-		ss.str("");
-		solution[0].value_type = ecuacion[0].value_type;
-		solution[0].real = check_division(ecuacion[2].value, ecuacion[2].value_type, ecuacion[0].value, solution[0].value_type);
+		go_div(ecuacion);
+		steps.push_back(printer(ecuacion, NULL));
+		//////////////////////////////////////////////////
+		solution[0].real = check_division(ecuacion[2].value, ecuacion[2].value_type, ecuacion[0].value, (solution[0].value_type = ecuacion[0].value_type));
 		if (!ecuacion[2].get_grade())
 		{
 			

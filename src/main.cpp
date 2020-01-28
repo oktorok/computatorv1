@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
 	}
 	sol = computatorv1(argv[1]);
 	cout << "Solving Steps:" << endl;
+	sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
 	for (int i=0; i < sol.steps.size(); i++)
 		cout << sol.steps[i] << endl;
 	return 0;
