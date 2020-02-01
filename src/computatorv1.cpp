@@ -63,7 +63,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 		actual = &expresiones[i];
 		for (int j=i + 1; j < expresiones.size(); j++)
 		{
-			tmp = expresiones[j];
+ 			tmp = expresiones[j];
 			if (!tmp.value.l)
 				continue;
 			if (actual->get_grade() == tmp.get_grade())
@@ -116,11 +116,8 @@ static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
 	{
 		if (type_a == 'd')
 		{
-			if (fmod(a.d, b.d))
-			{
-				type_b = 'd';
+			if (fmod(a.d, b.d) && (type_b = 'd'))
 				ret.d = a.d/b.d;
-			}
 			else
 			{
 				type_b = 'l';
@@ -129,11 +126,8 @@ static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
 		}
 		else
 		{
-			if (a.l % b.l)
-			{
-				type_b = 'd';
+			if (a.l % b.l && (type_b = 'd'))
 				ret.d = (double)a.l/b.l;
-			}
 			else
 			{
 				type_b = 'l';
@@ -143,22 +137,16 @@ static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
 	}
 	else if (type_a == 'l')
 	{
-		if (fmod(a.l, b.d))
-	       	{
-			type_b = 'd';
+		if (fmod(a.l, b.d) && (type_b = 'd'))
 			ret.d = a.l/b.d;
-		}
 		else
 		{
 			type_b = 'l';
 			ret.l = a.l/b.d;
 		}
 	}
-	else if (fmod(a.d, b.l))
-	{
-		type_b = 'd';
+	else if (fmod(a.d, b.l) && (type_b = 'd'))
 		ret.d = a.d/b.l;
-	}
 	else
 	{
 		type_b = 'l';
@@ -206,8 +194,9 @@ solution_t computatorv1(string ecuacion)
 	
 	vector <string> &steps = sol.steps;
 	expresiones = parsing3(ecuacion);
+	cout << printer(expresiones, NULL) << endl;
 	steps.push_back(printer(expresiones, NULL));
-
+	
 	expresiones = sort_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));
 

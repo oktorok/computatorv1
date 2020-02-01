@@ -10,6 +10,7 @@
 #include <vector>
 #include <cmath>
 //#include <bits/stdc++.h>
+#include <algorithm>
 
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
