@@ -56,6 +56,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 {
 	vector<monomio>::iterator it1;
 	monomio *actual, tmp;
+	int max_grade = 0, grade_act;
 	string t = "00";
 	
 	for (int i=0; i < expresiones.size(); i++)
@@ -64,16 +65,17 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 		for (int j=i + 1; j < expresiones.size(); j++)
 		{
  			tmp = expresiones[j];
+			grade_act = actual->get_grade();
+			if (grade_act > max_grade)
+				max_grade = grade_act;
 			if (!tmp.value.l)
 				continue;
-			if (actual->get_grade() == tmp.get_grade())
+			if (grade_act == tmp.get_grade())
 			{
 				t[0] = actual->value_type;
 				t[1] = tmp.value_type;
 				if (t == "ll")
-				{
 					actual->value.l = actual->value.l * actual->sign + tmp.value.l * tmp.sign;
-				}
 				else if (t == "dd") //caso especial cuando dos double de un long por ejemplo 0.8 + 0.2 = 1 
 					actual->value.d = actual->value.d * actual->sign + tmp.value.d * tmp.sign;
 				else if (t == "ld")
@@ -106,79 +108,9 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 			}
 		}
 	}
-	return expresiones;
-}
-
-static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
-{
-	value_u ret;
- 	if (type_a == type_b)
-	{
-		if (type_a == 'd')
-		{
-			if (fmod(a.d, b.d) && (type_b = 'd'))
-				ret.d = a.d/b.d;
-			else
-			{
-				type_b = 'l';
-				ret.l = (long)a.d/b.d;
-			}
-		}
-		else
-		{
-			if (a.l % b.l && (type_b = 'd'))
-				ret.d = (double)a.l/b.l;
-			else
-			{
-				type_b = 'l';
-				ret.l = a.l/b.l;
-			}
-		}
-	}
-	else if (type_a == 'l')
-	{
-		if (fmod(a.l, b.d) && (type_b = 'd'))
-			ret.d = a.l/b.d;
-		else
-		{
-			type_b = 'l';
-			ret.l = a.l/b.d;
-		}
-	}
-	else if (fmod(a.d, b.l) && (type_b = 'd'))
-		ret.d = a.d/b.l;
-	else
-	{
-		type_b = 'l';
-		ret.l = a.d/b.l;
-	}
-	return ret;
+	if (max_grade == 1)
+		expresiones = move_indepterm(expresiones);
 	
-}
-
-static vector<monomio> solve_fractions(vector<monomio> expresiones, vector<string> &steps)
-{
-	vector<monomio>::iterator it1, it2;
-	monomio num, *den;
-	string t = "00";
-	
-	for (int i=1; i < expresiones.size(); i++)
-	{
-		if (expresiones[i].get_variable() == "/")
-		{
-			num = expresiones[i - 1];
-			den = &expresiones[i + 1];
-			t[0] = num.value_type;
-			t[1] = den->value_type;
-			den->value = check_division(num.value, num.value_type, den->value, den->value_type);
-			den->sign *= num.sign;
-			it1 = expresiones.begin() + i - 1;
-			it2 = it1 + 2;
-			expresiones.erase(it1, it2);
-			i--;
-		}
-	}
-	steps.push_back(printer(expresiones, NULL));
 	return expresiones;
 }
 
@@ -194,14 +126,14 @@ solution_t computatorv1(string ecuacion)
 	
 	vector <string> &steps = sol.steps;
 	expresiones = parsing3(ecuacion);
-	cout << printer(expresiones, NULL) << endl;
 	steps.push_back(printer(expresiones, NULL));
 	
 	expresiones = sort_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));
 
-	expresiones = solve_fractions(expresiones, steps);
-	
+	expresiones = solve_fractions(expresiones);
+	steps.push_back(printer(expresiones, NULL));
+	cout << printer(expresiones, NULL) << endl;	
 	expresiones = simplify_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));
 

@@ -1,99 +1,13 @@
 #include "computator.h"
 
-static value_u check_division(value_u a, char type_a, value_u b, char &type_b)
-{
-	value_u ret;
- 	if (type_a == type_b)
-	{
-		if (type_a == 'd')
-		{
-			if (fmod(a.d, b.d))
-			{
-				type_b = 'd';
-				ret.d = a.d/b.d;
-			}
-			else
-			{
-				type_b = 'l';
-				ret.l = (long)a.d/b.d;
-			}
-		}
-		else
-		{
-			if (a.l % b.l)
-			{
-				type_b = 'd';
-				ret.d = (double)a.l/b.l;
-			}
-			else
-			{
-				type_b = 'l';
-				ret.l = a.l/b.l;
-			}
-		}
-	}
-	else if (type_a == 'l')
-	{
-		if (fmod(a.l, b.d))
-	       	{
-			type_b = 'd';
-			ret.d = a.l/b.d;
-		}
-		else
-		{
-			type_b = 'l';
-			ret.l = a.l/b.d;
-		}
-	}
-	else if (fmod(a.d, b.l))
-	{
-		type_b = 'd';
-		ret.d = a.d/b.l;
-	}
-	else
-	{
-		type_b = 'l';
-		ret.l = a.d/b.l;
-	}
-	return ret;
-	
-}
-
-static void go_div(vector<monomio> &ecuacion)
-{
-	vector<monomio>::iterator it1;
-	monomio tmp;
-
-	it1 = ecuacion.begin() + ecuacion.size() - 1;
-	ecuacion.insert(it1, ecuacion.back());
-	ecuacion.back().value = ecuacion[0].value;
-	ecuacion.back().value_type = ecuacion[0].value_type;
-	tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
-	ecuacion.insert(it1 + 1, tmp);
-	ecuacion[0].value.l = 1;
-	ecuacion[0].value_type = 'l';
-	//return ecuacion;
-}
-
-static void move_indepterm(vector<monomio> &ecuacion)
-{
-	vector<monomio>::iterator it1;
-
-	it1 = ecuacion.begin() + ecuacion.size() - 3;
-	ecuacion.back() = ecuacion[ecuacion.size() - 3];
-	ecuacion.back().side = -1;
-	ecuacion.back().sign *= -1;
-	ecuacion.erase(it1);	
-}
-
 static value_u solv_first_grade(vector<monomio> ecuacion, vector<string> &steps, char &value_type)
 {
 	value_u solution;
 	stringstream ss;
 
-	move_indepterm(ecuacion);
-	steps.push_back(printer(ecuacion, NULL));
-	go_div(ecuacion);
+	//ecuacion = move_indepterm(ecuacion);
+	//steps.push_back(printer(ecuacion, NULL));
+	ecuacion = go_div(ecuacion);
 	steps.push_back(printer(ecuacion,NULL));
 	value_type = ecuacion[0].value_type;
 	solution = check_division(ecuacion[2].value, ecuacion[2].value_type, ecuacion[0].value, value_type);
@@ -124,9 +38,9 @@ static solution_t * solv_second_grade(vector<monomio> ecuacion, vector<string> &
 	switch (ecuacion.size())
 	{
 	case 4:
-		move_indepterm(ecuacion);
+		ecuacion = move_indepterm(ecuacion);
 		steps.push_back(printer(ecuacion, NULL));
-		go_div(ecuacion);
+		ecuacion = go_div(ecuacion);
 		steps.push_back(printer(ecuacion, NULL));
 		//////////////////////////////////////////////////
 		solution[0].real = check_division(ecuacion[2].value, ecuacion[2].value_type, ecuacion[0].value, (solution[0].value_type = ecuacion[0].value_type));

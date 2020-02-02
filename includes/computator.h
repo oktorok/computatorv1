@@ -124,11 +124,15 @@ public:
 	}
 };
 
-vector<monomio> parsing(string);
-vector<monomio> parsing2(string);
+//vector<monomio> parsing(string);
+//vector<monomio> parsing2(string);
+vector<monomio> move_indepterm(vector<monomio>);
+vector<monomio> go_div(vector<monomio>);
 vector<monomio> parsing3(string);
 solution_t computatorv1(string);
 value_u solve(vector<monomio> , vector<string> &, char &);
+vector<monomio> solve_fractions(vector<monomio>);
+value_u check_division(value_u, char, value_u, char &);
 string printer(vector<monomio>, string *);
 void printer2(string, string, string );
 value_u mySqrt(value_u, char &);
