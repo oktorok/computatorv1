@@ -22,6 +22,13 @@ MOVE =	move_indepterm.cpp \
 
 MOVE_DIR = $(SRC_DIR)move_terms/
 
+PARSING_UTILS =	take_var.cpp \
+		take_value.cpp \
+		take_grade.cpp
+
+PARSING_UTILS_DIR = $(SRC_DIR)parsing_utils/
+
+
 INCLUDES = computator.h
 INCLUDES_DIR = includes/
 
@@ -29,14 +36,15 @@ OBJ_DIR = objects/
 SRC_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRC))
 SOLVE_UTILS_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o, $(SOLVE_UTILS))
 MOVE_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o,$(MOVE))
+PARSING_UTILS_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o, $(PARSING_UTILS))
 
 .PHONY: all clean fclean re
 
 all:
 	make $(NAME)
 
-$(NAME): $(SRC_OBJ) $(SOLVE_UTILS_OBJ) $(MOVE_OBJ)
-	$(CC) $(SRC_OBJ) $(SOLVE_UTILS_OBJ) $(MOVE_OBJ) -o $(NAME)
+$(NAME): $(SRC_OBJ) $(SOLVE_UTILS_OBJ) $(MOVE_OBJ) $(PARSING_UTILS_OBJ)
+	$(CC) $(SRC_OBJ) $(SOLVE_UTILS_OBJ) $(MOVE_OBJ) $(PARSING_UTILS_OBJ) -o $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(INCLUDES_DIR)$(INCLUDES)
 	mkdir -p $(OBJ_DIR)
@@ -49,6 +57,11 @@ $(OBJ_DIR)%.o: $(SOLVE_UTILS_DIR)%.cpp $(INCLUDES_DIR)$(INCLUDES)
 $(OBJ_DIR)%.o: $(MOVE_DIR)%.cpp $(INCLUDES_DIR)$(INCLUDES)
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) -c $< -I$(INCLUDES_DIR) -o $@
+
+$(OBJ_DIR)%.o: $(PARSING_UTILS_DIR)%.cpp $(INCLUDES_DIR)$(INCLUDES)
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CPPFLAGS) -c $< -I$(INCLUDES_DIR) -o $@
+
 
 clean:
 	rm -rf $(OBJ_DIR)

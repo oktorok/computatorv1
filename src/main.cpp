@@ -15,7 +15,8 @@ int main(int argc, char **argv) {
 		cout << "No expression found" << endl;
 		return (0);
 	}
-	sol = computatorv1(argv[1]);
+	expresiones = parsing3(argv[1]);
+	sol = computatorv1(expresiones);
 	cout << "Solving Steps:" << endl;
 	sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
 	for (int i=0; i < sol.steps.size(); i++)

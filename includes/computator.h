@@ -27,8 +27,8 @@ union value_u
 typedef struct solution_s {
 	bool imaginary;
 	char value_type;
-	value_u real;
-	string imaginary_sol;
+	vector<value_u> real;
+	vector<string> imaginary_sol;
 	vector<string> steps;
 } solution_t;
 
@@ -85,9 +85,15 @@ public:
 	{
 		this->variable = var;
 	}
+	
 	int get_grade()
 	{
 		return (grade);
+	}
+
+	void set_grade(int grad)
+	{
+		this->grade = grad;
 	}
 
 	bool is_compt(monomio compatible)
@@ -129,12 +135,14 @@ public:
 vector<monomio> move_indepterm(vector<monomio>);
 vector<monomio> go_div(vector<monomio>);
 vector<monomio> parsing3(string);
-solution_t computatorv1(string);
-value_u solve(vector<monomio> , vector<string> &, char &);
+int take_grade(int &, string);
+string take_var(int &, string);
+value_u take_value(int &, string, char &);
+solution_t computatorv1(vector<monomio>);
+solution_t solve(vector<monomio> , vector<string>);
 vector<monomio> solve_fractions(vector<monomio>);
 value_u check_division(value_u, char, value_u, char &);
 string printer(vector<monomio>, string *);
-void printer2(string, string, string );
 value_u mySqrt(value_u, char &);
 float myPow(float, int);
 #endif

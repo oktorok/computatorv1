@@ -30,70 +30,15 @@ static int class_character(char a)
 		return ERROR;
 }
 
-static value_u take_value(int &i, string expresion, char &type_var)
-{
-	int j = i;
-	value_u val;
-	size_t i2;
-	bool _float = false;
-	
-	while (isdigit(expresion[j]) || expresion[j] == '.')
-	{
-		j++;
-		if (expresion[j] == '.')
-			_float = true;
-				   
-	}
-	if (_float)
-	{
-		val.d = stod(expresion.substr(i), &i2);
-		type_var = 'd';
-	}
-	else
-	{
-		val.l = stol(expresion.substr(i), &i2, 10);
-		type_var = 'l';
-	}
-	//if (expresion[j] == '/')
-	i += (int)i2;
-	//cout << val.l << endl;
-	return val;
-}
-
-static string take_var(int &i, string expresion)
-{
-	string var;
-	int j = i-1;
-
-	while (isalpha(expresion[++j]));
-	var = expresion.substr(i, j - i);
-	//cout << "[" << i << "]" << "[" << j << "]";
-	//cout << var << endl;
-	i = j;
-	return var;
-}
-
-static int take_grade(int &i, string expresion)
-{
-	int grade;
-	size_t i2;
-	
-	i++;
-	grade = stoi(expresion.substr(i), &i2, 10);
-	i = i + (int)i2;
-	//cout << grade << endl;
-	return grade;
-}
-
 vector<monomio> parsing3(string expresion)
 {
 	vector<monomio> ecuacion;
 	int i = 0, expresion_l = expresion.length(), t, grade = 0;
 	short sign = 1;
 	char type_var = 'l';
-	string var = "", last_var = "";
+	string var = "";
         value_u value = (value_u){1};
-	short side = 1;
+	short side = 1, add = 0;
 	monomio tmp;
 	
 	while(i < expresion_l)
@@ -104,13 +49,12 @@ vector<monomio> parsing3(string expresion)
 		case SLASH:
 		case EQUAL:
 		case OPERATION:
-			if (i && last_var != "=")
+			if (i && !add)
 			{
-				last_var = var;
 				tmp.ini_monomio(var, value, grade, type_var, sign, side);       
 				ecuacion.push_back(tmp);
 			}
-			sign = 1;
+    			sign = 1;
 			if (expresion[i++] == '-')
 				sign = -1;
 			grade = 0;
@@ -119,18 +63,16 @@ vector<monomio> parsing3(string expresion)
 			if (t == EQUAL)
 			{
 				side = -1;
-				last_var = "=";
+				add = 2;
 				tmp.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
 				ecuacion.push_back(tmp);
 			}
 			else if (t == SLASH)
 			{
-				last_var = "/";
+				add = 2;
 				tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
 				ecuacion.push_back(tmp);	
 			}
-			else
-				last_var = "";
 			break;
 		case NUMBER:
 			value = take_value(i, expresion, type_var);
@@ -141,11 +83,13 @@ vector<monomio> parsing3(string expresion)
 			break;
 		case SPACE:
 			i++;
+			add++;
 			break;
 		case POTENCE:
 			grade = take_grade(i, expresion);
 			break;
 		}
+		add = (add ? add - 1 : 0);
 	}
 	tmp.ini_monomio(var, value, grade, type_var, sign, side);
 	ecuacion.push_back(tmp);

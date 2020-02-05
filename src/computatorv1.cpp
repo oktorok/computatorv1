@@ -54,7 +54,6 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones)
 
 static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 {
-	vector<monomio>::iterator it1;
 	monomio *actual, tmp;
 	int max_grade = 0, grade_act;
 	string t = "00";
@@ -76,7 +75,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				t[1] = tmp.value_type;
 				if (t == "ll")
 					actual->value.l = actual->value.l * actual->sign + tmp.value.l * tmp.sign;
-				else if (t == "dd") //caso especial cuando dos double de un long por ejemplo 0.8 + 0.2 = 1 
+				else if (t == "dd")
 					actual->value.d = actual->value.d * actual->sign + tmp.value.d * tmp.sign;
 				else if (t == "ld")
 				{
@@ -85,47 +84,38 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				}
 				else if (t == "dl")
 					actual->value.d = actual->value.d * actual->sign + tmp.value.l * tmp.sign;
-				it1 = expresiones.begin() + j;
-				expresiones.erase(it1);
+				expresiones.erase(expresiones.begin() + j);
 				if (!actual->value.l)
 				{
-					it1 = expresiones.begin() + i;
-					expresiones.erase(it1);
-					i = i - 1;
+					expresiones.erase(expresiones.begin() + i--);
 					break;
 				}
 				else if (actual->value_type == 'l' && actual->value.l < 0)
-				{
-					actual->sign = -1;
-					actual->value.l *= -1;
-				}
+					actual->value.l *= (actual->sign = -1);
 				else if (actual->value_type == 'd' && actual->value.d < 0)
-				{
-					actual->sign = -1;
-					actual->value.d *= -1;
-				}
+					actual->value.d *= (actual->sign = -1);
 				j = i;
 			}
+			else
+				break;
 		}
 	}
-	if (max_grade == 1)
+	if (max_grade == 1 || expresiones.size() == 4)
 		expresiones = move_indepterm(expresiones);
 	
 	return expresiones;
 }
 
-solution_t computatorv1(string ecuacion)
+solution_t computatorv1(vector<monomio> expresiones)
 {
-	vector <monomio> expresiones;
-	//vector <string> steps;
 	solution_t sol;
 	string result;
 	int mon_cuant;
 
 	//sol = new solution_t();
 	
-	vector <string> &steps = sol.steps;
-	expresiones = parsing3(ecuacion);
+	vector <string> steps;
+	//expresiones = parsing3(ecuacion);
 	steps.push_back(printer(expresiones, NULL));
 	
 	expresiones = sort_expresion(expresiones);
@@ -133,11 +123,11 @@ solution_t computatorv1(string ecuacion)
 
 	expresiones = solve_fractions(expresiones);
 	steps.push_back(printer(expresiones, NULL));
-	cout << printer(expresiones, NULL) << endl;	
+
 	expresiones = simplify_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));
 
-	sol.real = solve(expresiones, steps, sol.value_type);
+	sol = solve(expresiones, steps);
 	//cout << "AFTER SIMP" << endl;
 	//for (int i = 0; i < mon_cuant; i++)
 	//{
