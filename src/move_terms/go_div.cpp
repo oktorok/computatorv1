@@ -4,6 +4,8 @@ vector<monomio> go_div(vector<monomio> ecuacion)
 {
 	monomio tmp;
 
+	if (ecuacion[0].value_type == 'l' && ecuacion[0].value.l == 1)
+		return ecuacion;
 	tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
 	ecuacion.push_back(tmp);
 	ecuacion.push_back(ecuacion[ecuacion.size() - 2]);

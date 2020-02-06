@@ -30,7 +30,7 @@ static int class_character(char a)
 		return ERROR;
 }
 
-vector<monomio> parsing3(string expresion)
+vector<monomio> parsing3(string expresion, int &max_grade)
 {
 	vector<monomio> ecuacion;
 	int i = 0, expresion_l = expresion.length(), t, grade = 0;
@@ -40,7 +40,8 @@ vector<monomio> parsing3(string expresion)
         value_u value = (value_u){1};
 	short side = 1, add = 0;
 	monomio tmp;
-	
+
+	max_grade = 0;
 	while(i < expresion_l)
 	{
 		t = class_character(expresion[i]);
@@ -87,6 +88,8 @@ vector<monomio> parsing3(string expresion)
 			break;
 		case POTENCE:
 			grade = take_grade(i, expresion);
+			if (grade > max_grade)
+				max_grade = grade;
 			break;
 		}
 		add = (add ? add - 1 : 0);

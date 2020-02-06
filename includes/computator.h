@@ -12,12 +12,14 @@
 //#include <bits/stdc++.h>
 #include <algorithm>
 
+
+
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
 #define SUPERINDEX_4 "\u2074"
 
 using namespace std;
-
+#include "templates.h"
 union value_u
 {
 	long l;
@@ -134,12 +136,13 @@ public:
 //vector<monomio> parsing2(string);
 vector<monomio> move_indepterm(vector<monomio>);
 vector<monomio> go_div(vector<monomio>);
-vector<monomio> parsing3(string);
+vector<monomio> parsing3(string, int &);
 int take_grade(int &, string);
 string take_var(int &, string);
 value_u take_value(int &, string, char &);
-solution_t computatorv1(vector<monomio>);
+solution_t computatorv1(vector<monomio>, int );
 solution_t solve(vector<monomio> , vector<string>);
+solution_t no_indepterm(vector<monomio>, vector<string>);
 vector<monomio> solve_fractions(vector<monomio>);
 value_u check_division(value_u, char, value_u, char &);
 string printer(vector<monomio>, string *);

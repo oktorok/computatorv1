@@ -5,7 +5,7 @@ int main(int argc, char **argv) {
 
 	vector<monomio> expresiones;
 	vector<string> steps;
-	int mon_cuant;
+	int mon_cuant, max_grade;
 	string *result;
 	solution_t sol;
 
@@ -15,8 +15,8 @@ int main(int argc, char **argv) {
 		cout << "No expression found" << endl;
 		return (0);
 	}
-	expresiones = parsing3(argv[1]);
-	sol = computatorv1(expresiones);
+	expresiones = parsing3(argv[1], max_grade);
+	sol = computatorv1(expresiones, max_grade);
 	cout << "Solving Steps:" << endl;
 	sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
 	for (int i=0; i < sol.steps.size(); i++)

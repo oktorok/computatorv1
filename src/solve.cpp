@@ -18,12 +18,6 @@ static solution_t solv_first_grade(vector<monomio> ecuacion, vector<string> step
 }
 
 
-static vector<monomio> sub_vector(vector<monomio> src, int start, int end)
-{
-	vector<monomio> sub(src.begin() + start + 1, src.begin() + end + 1);
-	return sub;
-}
-
 static solution_t solv_second_grade(vector<monomio> ecuacion, vector<string> steps)
 {
 	solution_t sol;
@@ -66,9 +60,11 @@ static solution_t solv_second_grade(vector<monomio> ecuacion, vector<string> ste
 		sol.steps = steps;
 		break;
 	case 4:
+		sol = no_indepterm(ecuacion, steps);
 		break;
 
 	case 5:
+		sol.steps = steps;
 		break;
 	}
 	return sol;
