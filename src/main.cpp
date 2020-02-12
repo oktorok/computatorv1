@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
 	vector<string> steps;
 	int mon_cuant, max_grade;
 	string *result;
-	solution_t sol;
+	output_t sol;
 
 	setlocale(LC_ALL, "");
 	if (argc < 2)

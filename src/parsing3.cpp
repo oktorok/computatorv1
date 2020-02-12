@@ -41,7 +41,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 	short side = 1, add = 0;
 	monomio tmp;
 
-	max_grade = 0;
+	max_grade = 1;
 	while(i < expresion_l)
 	{
 		t = class_character(expresion[i]);

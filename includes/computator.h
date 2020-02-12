@@ -26,13 +26,29 @@ union value_u
 	double d;
 };
 
+typedef struct complex_solution_s {
+	char real_type;
+	char imaginary_type;
+	value_u real;
+	value_u imaginary;
+} complex_solution_t;
+
+union type_sol_u
+{
+	value_u real;
+	complex_solution_t imaginary;
+};
+
 typedef struct solution_s {
 	bool imaginary;
 	char value_type;
-	vector<value_u> real;
-	vector<string> imaginary_sol;
-	vector<string> steps;
+	type_sol_u sol;
 } solution_t;
+
+typedef struct output_s {
+	vector<solution_t> solutions;
+	vector<string> steps;
+} output_t;
 
 class monomio {
 private:
@@ -140,10 +156,14 @@ vector<monomio> parsing3(string, int &);
 int take_grade(int &, string);
 string take_var(int &, string);
 value_u take_value(int &, string, char &);
-solution_t computatorv1(vector<monomio>, int );
-solution_t solve(vector<monomio> , vector<string>);
-solution_t no_indepterm(vector<monomio>, vector<string>);
+output_t computatorv1(vector<monomio>, int );
+output_t solve(vector<monomio> , output_t);
+output_t no_indepterm(vector<monomio>, output_t);
 vector<monomio> solve_fractions(vector<monomio>);
+output_t solv_first_grade(vector<monomio>, output_t);
+output_t simple_solve(vector<monomio>, output_t);
+output_t normal_solve(vector<monomio>, output_t);
+complex_solution_t create_complex(vector<monomio>);
 value_u check_division(value_u, char, value_u, char &);
 string printer(vector<monomio>, string *);
 value_u mySqrt(value_u, char &);

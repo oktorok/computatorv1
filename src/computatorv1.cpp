@@ -12,6 +12,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	monomio equal;
 	int grade;
 	vector<int> watched;
+	
 	equal.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
 	while (max_grade > -1)
 	{
@@ -32,15 +33,20 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			grade = expresiones[i].get_grade();
 			if (grade == max_grade && find(watched.begin(), watched.end(), i) == watched.end())
 			{
-				if (expresiones[i].value.l == 0)
+				if (!expresiones[i].value.l && !expresiones[i].value.d)
 					continue;
-				if (!grade && i < expresiones.size() - 2)
+				if ((grade && expresiones[i].side < 0) || (!grade && i < expresiones.size() - 2))
 					expresiones[i].sign *= -1;
 				sorted.push_back(expresiones[i]);
 				watched.push_back(i);
 				break;
 			}
 		}
+	}
+	if (sorted.back().get_grade() == -1)
+	{
+		zero.ini_monomio("", (value_u){0}, 0, 'l', 1, 1);
+		sorted.push_back(zero);
 	}
 	return sorted;
 }
@@ -50,34 +56,34 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 	monomio *actual, tmp;
 	int max_grade = 0, grade_act;
 	string t = "00";
+	double intpart;
 	
 	for (int i=0; i < expresiones.size(); i++)
 	{
 		actual = &expresiones[i];
+		grade_act = actual->get_grade();
 		for (int j=i + 1; j < expresiones.size(); j++)
 		{
  			tmp = expresiones[j];
-			grade_act = actual->get_grade();
 			if (grade_act > max_grade)
 				max_grade = grade_act;
-			if (!tmp.value.l || grade_act != tmp.get_grade())
+			if ((!tmp.value.l && !tmp.value.d) || grade_act != tmp.get_grade())
 				continue;
 			if (grade_act == tmp.get_grade())
 			{
 				t[0] = actual->value_type;
 				t[1] = tmp.value_type;
 				if (t == "ll")
-				{
-					cout << actual->value.l << endl;
-					cout << actual->sign << endl;
-					cout << tmp.value.l << endl;
-					cout << tmp.sign << endl;
 					actual->value.l = actual->value.l * actual->sign + tmp.value.l * tmp.sign;
-					cout << actual->value.l << endl;
-					cout << actual->sign << endl;
-				}
 				else if (t == "dd")
+				{
 					actual->value.d = actual->value.d * actual->sign + tmp.value.d * tmp.sign;
+					if (!modf(actual->value.d, &intpart))
+					{
+						actual->value.l = (long)actual->value.d;
+						actual->value_type = 'l';
+					}
+				}
 				else if (t == "ld")
 				{
 					actual->value.d = actual->value.l * actual->sign + tmp.value.d * tmp.sign;
@@ -92,9 +98,9 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 					break;
 				}
 				else if (actual->value_type == 'l' && actual->value.l < 0)
-					actual->value.l *= (actual->sign *= -1);
+					actual->value.l *= (actual->sign = -1);
 				else if (actual->value_type == 'd' && actual->value.d < 0)
-					actual->value.d *= (actual->sign *= -1);
+					actual->value.d *= (actual->sign = -1);
 				else
 					actual->sign = 1;
 				
@@ -104,15 +110,12 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				break;
 		}
 	}
-	if (max_grade == 2 && expresiones.size() == 4)
-		expresiones = move_indepterm(expresiones);
-	
 	return expresiones;
 }
 
-solution_t computatorv1(vector<monomio> expresiones, int max_grade)
+output_t computatorv1(vector<monomio> expresiones, int max_grade)
 {
-	solution_t sol;
+	output_t sol;
 	string result;
 	int mon_cuant;
 
@@ -121,17 +124,19 @@ solution_t computatorv1(vector<monomio> expresiones, int max_grade)
 	vector <string> steps;
 	//expresiones = parsing3(ecuacion);
 	steps.push_back(printer(expresiones, NULL));
+
+	expresiones = solve_fractions(expresiones);
+	steps.push_back(printer(expresiones, NULL));
 	
 	expresiones = sort_expresion(expresiones, max_grade);
 	steps.push_back(printer(expresiones, NULL));
 
-	expresiones = solve_fractions(expresiones);
-	steps.push_back(printer(expresiones, NULL));
-
 	expresiones = simplify_expresion(expresiones);
 	steps.push_back(printer(expresiones, NULL));
-
-	sol = solve(expresiones, steps);
+	//cout << expresiones.size() << endl;
+	//cout << printer(expresiones, NULL) << endl;
+	sol.steps = steps;
+	sol = solve(expresiones, sol);
 	//cout << "AFTER SIMP" << endl;
 	//for (int i = 0; i < mon_cuant; i++)
 	//{

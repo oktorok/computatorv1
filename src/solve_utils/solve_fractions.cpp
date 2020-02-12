@@ -15,7 +15,10 @@ vector<monomio> solve_fractions(vector<monomio> expresiones)
 			t[0] = num.value_type;
 			t[1] = den->value_type;
 			den->value = check_division(num.value, num.value_type, den->value, den->value_type);
-			den->sign *= num.sign;
+			if (num.value.l)
+				den->sign *= num.sign;
+			else
+				den->sign = 1;
 			it1 = expresiones.begin() + i - 1;
 			it2 = it1 + 2;
 			expresiones.erase(it1, it2);

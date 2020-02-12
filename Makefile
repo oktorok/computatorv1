@@ -14,14 +14,15 @@ SRC_DIR = src/
 
 SOLVE_UTILS =	check_division.cpp \
 		solve_fractions.cpp \
-		no_indepterm.cpp
+		no_indepterm.cpp \
+		solv_first_grade.cpp \
+		move_indepterm.cpp \
+		go_div.cpp \
+		simple_solve.cpp \
+		create_complex.cpp \
+		normal_solve.cpp
 
 SOLVE_UTILS_DIR = $(SRC_DIR)solve_utils/
-
-MOVE =	move_indepterm.cpp \
-	go_div.cpp
-
-MOVE_DIR = $(SRC_DIR)move_terms/
 
 PARSING_UTILS =	take_var.cpp \
 		take_value.cpp \
@@ -40,7 +41,6 @@ INCLUDES_PATH = $(patsubst %.h,$(INCLUDES_DIR)%.h, $(INCLUDES))
 OBJ_DIR = objects/
 SRC_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o,$(SRC))
 SOLVE_UTILS_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o, $(SOLVE_UTILS))
-MOVE_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o,$(MOVE))
 PARSING_UTILS_OBJ = $(patsubst %.cpp,$(OBJ_DIR)%.o, $(PARSING_UTILS))
 
 .PHONY: all clean fclean re
@@ -56,10 +56,6 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(INCLUDES_PATH)
 	$(CC) $(CPPFLAGS) -c $< -I$(INCLUDES_DIR) -o $@
 
 $(OBJ_DIR)%.o: $(SOLVE_UTILS_DIR)%.cpp $(INCLUDES_PATH)
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CPPFLAGS) -c $< -I$(INCLUDES_DIR) -o $@
-
-$(OBJ_DIR)%.o: $(MOVE_DIR)%.cpp $(INCLUDES_PATH)
 	mkdir -p $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) -c $< -I$(INCLUDES_DIR) -o $@
 
