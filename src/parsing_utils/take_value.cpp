@@ -7,10 +7,10 @@ value_u take_value(int &i, string expresion, char &type_var)
 	size_t i2;
 	bool _float = false;
 	
-	while (isdigit(expresion[j]) || expresion[j] == '.')
+	while (isdigit(expresion[j]) || expresion[j] == ',')
 	{
 		j++;
-		if (expresion[j] == '.')
+		if (expresion[j] == ',')
 			_float = true;
 				   
 	}
@@ -26,6 +26,5 @@ value_u take_value(int &i, string expresion, char &type_var)
 	}
 	//if (expresion[j] == '/')
 	i += (int)i2;
-	//cout << val.l << endl;
 	return val;
 }
