@@ -20,7 +20,9 @@ SOLVE_UTILS =	check_division.cpp \
 		go_div.cpp \
 		simple_solve.cpp \
 		create_complex.cpp \
-		normal_solve.cpp
+		normal_solve.cpp \
+		second_grade_ecuation.cpp \
+		check_type.cpp
 
 SOLVE_UTILS_DIR = $(SRC_DIR)solve_utils/
 

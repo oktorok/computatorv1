@@ -56,7 +56,6 @@ private:
 	int grade;
 	
 public:
-	string value_string;
 	char value_type;
 	value_u value;
 	short sign;
@@ -113,39 +112,6 @@ public:
 	{
 		this->grade = grad;
 	}
-
-	bool is_compt(monomio compatible)
-	{
-		if (this->get_variable() == compatible.get_variable() && this->get_grade() == compatible.get_grade())
-			return (true);
-		return (false);
-	}
-	
-	void sum_monomios(monomio sumando, short side)
-	{
-		char t1 = this->value_type, t2 = sumando.value_type;
-		stringstream ss;
-		for (int i=0; i < this->value_string.size();i++)
-		{
-			if (isdigit(this->value_string[i]) && !ss.rdbuf()->in_avail())
-			{
-				ss << this->value_string.substr(0, i);
-				if (t1 == t2 && t1 == 'l')
-				{
-					this->value.l += sumando.value.l * side;
-					ss << this->value.l;
-				}
-				else
-				{
-					this->value.d += sumando.value.d * side;
-					ss << this->value.d;
-				}
-				this->value_string = ss.str();
-				return;
-			}
-		}
-		return ;
-	}
 };
 
 //vector<monomio> parsing(string);
@@ -153,6 +119,11 @@ public:
 vector<monomio> move_indepterm(vector<monomio>);
 vector<monomio> go_div(vector<monomio>);
 vector<monomio> parsing3(string, int &);
+value_u check_type(value_u, char &);
+monomio calc_den(monomio);
+monomio calc_sumand(monomio);
+monomio calc_radicand(monomio, monomio, monomio);
+monomio calc_num(monomio, monomio, bool);
 int take_grade(int &, string);
 string take_var(int &, string);
 value_u take_value(int &, string, char &);
