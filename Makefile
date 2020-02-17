@@ -12,8 +12,7 @@ SRC =	main.cpp \
 
 SRC_DIR = src/
 
-SOLVE_UTILS =	check_division.cpp \
-		solve_fractions.cpp \
+SOLVE_UTILS =	solve_fractions.cpp \
 		no_indepterm.cpp \
 		solv_first_grade.cpp \
 		move_indepterm.cpp \
@@ -21,8 +20,7 @@ SOLVE_UTILS =	check_division.cpp \
 		simple_solve.cpp \
 		create_complex.cpp \
 		normal_solve.cpp \
-		second_grade_ecuation.cpp \
-		check_type.cpp
+		second_grade_ecuation.cpp
 
 SOLVE_UTILS_DIR = $(SRC_DIR)solve_utils/
 

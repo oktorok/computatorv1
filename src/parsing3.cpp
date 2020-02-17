@@ -35,9 +35,8 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 	vector<monomio> ecuacion;
 	int i = 0, expresion_l = expresion.length(), t, grade = 0;
 	short sign = 1;
-	char type_var = 'l';
 	string var = "";
-        value_u value = (value_u){1};
+        double value = 1;
 	short side = 1, add = 0;
 	monomio tmp;
 
@@ -52,7 +51,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		case OPERATION:
 			if (i && !add)
 			{
-				tmp.ini_monomio(var, value, grade, type_var, sign, side);       
+				tmp.ini_monomio(var, value, grade, sign, side);       
 				ecuacion.push_back(tmp);
 			}
     			sign = 1;
@@ -60,23 +59,23 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				sign = -1;
 			grade = 0;
 			var = "";
-			value = (value_u){1};
+			value = 1;
 			if (t == EQUAL)
 			{
 				side = -1;
 				add = 2;
-				tmp.ini_monomio("=", (value_u){0}, -1, 'l', 0, 0);
+				tmp.ini_monomio("=", 0, -1, 0, 0);
 				ecuacion.push_back(tmp);
 			}
 			else if (t == SLASH)
 			{
 				add = 2;
-				tmp.ini_monomio("/", (value_u){0}, -1, 'l', 0, 0);
+				tmp.ini_monomio("/", 0, -1, 0, 0);
 				ecuacion.push_back(tmp);	
 			}
 			break;
 		case NUMBER:
-			value = take_value(i, expresion, type_var);
+			value = take_value(i, expresion);
 			break;
 		case CHAR:
 			var = take_var(i, expresion);
@@ -94,7 +93,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		}
 		add = (add ? add - 1 : 0);
 	}
-	tmp.ini_monomio(var, value, grade, type_var, sign, side);
+	tmp.ini_monomio(var, value, grade, sign, side);
 	ecuacion.push_back(tmp);
 	return ecuacion;
 }

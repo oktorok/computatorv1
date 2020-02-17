@@ -4,7 +4,7 @@ static monomio create_zero_sol(string var)
 {
 	monomio zero_sol;
 
-	zero_sol.ini_monomio(var, (value_u){1}, -1, 'l', 1, 1);
+	zero_sol.ini_monomio(var, 1, -1, 1, 1);
 	return zero_sol;
 }
 
@@ -25,8 +25,7 @@ output_t no_indepterm(vector<monomio> ecuacion, output_t solution)
 	ss.str("");
 	ss << ecuacion[0].get_variable() << "=0";
 	sol.imaginary = false;
-	sol.sol.real = (value_u){0};
-	sol.value_type = 'l';
+	sol.sol.real = 0;
 	solution.solutions.push_back(sol);
 	solution.steps.push_back(ss.str());
 	solution.steps.push_back("or");

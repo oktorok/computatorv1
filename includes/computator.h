@@ -20,28 +20,22 @@
 
 using namespace std;
 #include "templates.h"
-union value_u
-{
-	long l;
-	double d;
-};
 
 typedef struct complex_solution_s {
 	char real_type;
 	char imaginary_type;
-	value_u real;
-	value_u imaginary;
+	double real;
+	double imaginary;
 } complex_solution_t;
 
 union type_sol_u
 {
-	value_u real;
+	double real;
 	complex_solution_t imaginary;
 };
 
 typedef struct solution_s {
 	bool imaginary;
-	char value_type;
 	type_sol_u sol;
 } solution_t;
 
@@ -56,8 +50,7 @@ private:
 	int grade;
 	
 public:
-	char value_type;
-	value_u value;
+	double value;
 	short sign;
 	short side;
 
@@ -69,13 +62,11 @@ public:
 		grade = 0;
 		sign = 1;
 		side = 1;
-		value_type = 0;
-		value = (value_u){0};
+		value = 0;
 	}
 
 	monomio(const monomio &src)
 	{
-		this->value_type = src.value_type;
 		this->sign = src.sign;
 		this->side = src.side;
 		this->value = src.value;
@@ -83,9 +74,8 @@ public:
 		this->grade = src.grade;
 	}
 
-	void ini_monomio(string var, union value_u val, int gra, int val_typ, short val_sign, short val_side)
+	void ini_monomio(string var, double val, int gra, short val_sign, short val_side)
 	{
-		this->value_type = val_typ;
 		this->sign = val_sign;
 		this->side = val_side;
 		this->value = val;
@@ -119,14 +109,13 @@ public:
 vector<monomio> move_indepterm(vector<monomio>);
 vector<monomio> go_div(vector<monomio>);
 vector<monomio> parsing3(string, int &);
-value_u check_type(value_u, char &);
 monomio calc_den(monomio);
 monomio calc_sumand(monomio);
 monomio calc_radicand(monomio, monomio, monomio);
 monomio calc_num(monomio, monomio, bool);
 int take_grade(int &, string);
 string take_var(int &, string);
-value_u take_value(int &, string, char &);
+double take_value(int &, string);
 output_t computatorv1(vector<monomio>, int );
 output_t solve(vector<monomio> , output_t);
 output_t no_indepterm(vector<monomio>, output_t);
@@ -135,8 +124,6 @@ output_t solv_first_grade(vector<monomio>, output_t);
 output_t simple_solve(vector<monomio>, output_t);
 output_t normal_solve(vector<monomio>, output_t);
 complex_solution_t create_complex(vector<monomio>);
-value_u check_division(value_u, char, value_u, char &);
 string printer(vector<monomio>, string *);
-value_u mySqrt(value_u, char &);
-float myPow(float, int);
+double mySqrt(double);
 #endif

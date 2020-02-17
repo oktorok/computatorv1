@@ -24,15 +24,8 @@ string printer (vector<monomio> ecuacion, string *result)
 				ss << '+';
 		}
 		sign = true;
-		if (ecuacion[i].value_type == 'l')
-		{
-			if (ecuacion[i].value.l != 1 || tmp == "")
-				ss << ecuacion[i].value.l;
-		}
-		else if (ecuacion[i].value.d != 1 || tmp == "")
-		{
-			ss << ecuacion[i].value.d;
-		}
+		if (ecuacion[i].value != 1 || tmp == "")
+			ss << ecuacion[i].value;
 		ss << tmp;
 		grade = ecuacion[i].get_grade();
 		if (grade > 1 && grade < 4)
