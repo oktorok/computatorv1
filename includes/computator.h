@@ -21,6 +21,12 @@
 using namespace std;
 #include "templates.h"
 
+typedef struct fraction_str_s {
+	stringstream up;
+	stringstream middle;
+	stringstream down;
+} fraction_str_t;
+
 typedef struct complex_solution_s {
 	char real_type;
 	char imaginary_type;

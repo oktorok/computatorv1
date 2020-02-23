@@ -1,33 +1,125 @@
 #include "computator.h"
 
+static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool sign, fraction_str_t &last, bool reset_cuant)
+{
+	fraction_str_t fraction;
+	stringstream tmpss;
+	int num_length, den_length;
+	static int cuant_write;
+
+	if (reset_cuant)
+		cuant_write = 0;
+	fraction.up << last.up.str();
+	fraction.middle << last.middle.str();
+	fraction.down << last.down.str();
+	if (sign && ecuacion[slash - 1].sign < 0)
+		fraction.middle << '-';
+	else if (sign)
+		fraction.middle << '+';
+	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
+	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
+	for (int j = 0; j < num_length; j++)
+		fraction.up << " ";
+	for (int j = 0; j < den_length; j++)
+		fraction.down << " ";
+	tmpss << ecuacion[slash - 1].value;
+	num_length = tmpss.str().size();
+	tmpss.str("");
+	tmpss << ecuacion[slash + 1].value;
+	den_length = tmpss.str().size();
+	tmpss.str("");
+	cuant_write = (num_length > den_length ? num_length : den_length);
+	cuant_write += 2;
+	for (int j = 0; j < cuant_write; j++)
+	{
+		fraction.middle << "―";
+		if (j < (cuant_write - num_length) / 2)
+			fraction.up << " ";
+		if (j < (cuant_write - den_length) / 2)
+			fraction.down << " ";
+	}
+	fraction.up << ecuacion[slash - 1].value;
+	fraction.down << ecuacion[slash + 1].value;
+	fraction.middle << ecuacion[slash + 1].get_variable();
+	return fraction;
+}
+
 string printer (vector<monomio> ecuacion, string *result)
 {
-	int mon_cuant = ecuacion.size();
+	int mon_cuant = ecuacion.size(), i = 0, iplus = 0;
 	int grade;
 	stringstream ss;
 	string tmp;
-	bool sign = false;
-	for (int i = 0; i < mon_cuant; i++)
+	bool sign = false, reset = true;
+	fraction_str_t fraction, tmpfra;
+	while (i < mon_cuant)
 	{
+		iplus = 1;
 		tmp = ecuacion[i].get_variable();
-		if (tmp == "=" || tmp == "/")
+		if (tmp == "=")
 		{
 			ss << tmp;
 			sign = false;
+			i += iplus;
 			continue;
 		}
-		if (sign || ecuacion[i].sign < 0)
+		if (i + 1 < ecuacion.size() && ecuacion[i + 1].get_variable() == "/")
 		{
-			if (ecuacion[i].sign < 0)
-				ss << '-';
-			else
-				ss << '+';
+			tmpfra.middle.str("");
+			tmpfra.middle << ss.str();
+			tmpfra = print_fraction(ecuacion, i + 1, sign, tmpfra, reset);
+			fraction.up.str("");
+			fraction.up << tmpfra.up.str();
+			ss.str("");
+			ss << tmpfra.middle.str();
+			fraction.down.str("");
+			fraction.down << tmpfra.down.str();
+			reset = false;
+			iplus = 3;
+			// if (sign && ecuacion[i].sign < 0)
+			// 	ss << '-';
+			// else if (sign)
+			// 	ss << '+';
+			// num_length = ss.str().size() - ssu.str().size() - cuant_write * 2;
+			// for (int j = 0; j < num_length; j++)
+			// 	ssu << " ";
+			// den_length = ss.str().size() - ssd.str().size() - cuant_write * 2;
+			// for (int j = 0; j < den_length; j++)
+			// 	ssd << " ";
+			// tmpss << ecuacion[i].value;
+			// num_length = tmpss.str().size();
+			// tmpss.str("");
+			// tmpss << ecuacion[i + 2].value;
+			// den_length = tmpss.str().size();
+			// tmpss.str("");
+			// cuant_write = (num_length > den_length ? num_length : den_length);
+			// cuant_write += 2;
+			// for (int j = 0; j < cuant_write; j++)
+			//      ss << "―";
+			// for (int j = 0; j < (cuant_write - num_length) / 2; j++)
+			// 	ssu << " ";
+			// for (int j = 0; j < (cuant_write - den_length) / 2; j++)
+			// 	ssd << " ";
+			// ssu << ecuacion[i].value;
+			// ssd << ecuacion[i + 2].value;
+			//iplus = 3;
 		}
-		sign = true;
-		if (ecuacion[i].value != 1 || tmp == "")
-			ss << ecuacion[i].value;
-		ss << tmp;
-		grade = ecuacion[i].get_grade();
+		else
+		{
+			if (sign || ecuacion[i].sign < 0)
+				{
+					if (ecuacion[i].sign < 0)
+						ss << '-';
+					else
+						ss << '+';
+				}
+			sign = true;
+			if (ecuacion[i].value != 1 || tmp == "")
+				ss << ecuacion[i].value;
+			ss << ecuacion[i + iplus - 1].get_variable();
+		}
+
+		grade = ecuacion[i + iplus - 1].get_grade();
 		if (grade > 1 && grade < 4)
 		{
 			tmp = SUPERINDEX_2;
@@ -40,89 +132,25 @@ string printer (vector<monomio> ecuacion, string *result)
 			tmp[2] += grade - 4;
 			ss << tmp;
 		}
-		
+		i += iplus;
 	}
-		/*
-		grade = ecuacion[i].get_grade();
-		if ((ecuacion[i].value.l > 0  && i != 0)
-			ss << "+";
-			//printf("+");
-		if (ecuacion[i].get_variable() != "")
-		{
-			if (ecuacion[i].frac_value)
-				//printf("%g%s", ecuacion[i].frac_value, ecuacion[i].get_variable().c_str());
-				ss << ecuacion[i].frac_value << ecuacion[i].get_variable().c_str();
-			else if (ecuacion[i].value == -1)
-				//printf("-%s",ecuacion[i].get_variable().c_str());
-				ss << "-" << ecuacion[i].get_variable().c_str();
-			else if (ecuacion[i].value != 1)
-				//printf("%i%s", ecuacion[i].value,ecuacion[i].get_variable().c_str());
-				ss << ecuacion[i].value << ecuacion[i].get_variable().c_str();
-			else
-				//printf("%s", ecuacion[i].get_variable().c_str());
-				ss << ecuacion[i].get_variable().c_str();
-			if (grade > 1 && grade < 4)
-			{
-				//wprintf(L"%lc", 0x00B2 + grade - 2);
-				//ss << wchar_t(0x00B2 + grade - 2);
-				tmp = SUPERINDEX_2;
-				tmp[1] += grade - 2;
-				ss << tmp;
-			}
-			else if (grade >= 4)
-			{
-				//wprintf(L"%lc", 0x2074 + grade - 4);
-				//ss << wchar_t(0x2074 + grade - 4);
-				tmp = SUPERINDEX_4;
-				tmp[2] += grade - 4;
-				ss << tmp;
-			}
-		}
-		else if (ecuacion[i].value != 0)
-			//printf("%i", ecuacion[i].value);
-			ss << ecuacion[i].value;
+	if (fraction.up.rdbuf()->in_avail())
+	{
+		fraction.up << endl;
+	        ss << endl;
+		fraction.up << ss.str() << fraction.down.str();
+		return fraction.up.str();
 	}
-	ss << "=0" << endl;
-	//printf("=0\n");*/
+	
 	return ss.str();
 }
 
-void printer2(string variable, string result, string type_answer)
-{
-	int frac_pos, res_length, denominator_length, radicand = 0, written_characters;
-	stringstream ss;
-	res_length = result.length();
-	frac_pos = result.find("/");
-	if (!variable.empty())
-	{
-		ss << type_answer << variable << " = ";
-		type_answer = ss.str();
-		ss.str("");
-	}
-	if (frac_pos > 0)
-	{
-		ss << endl << string(type_answer.length(), ' ');
-		denominator_length = res_length - frac_pos - 1;
-		for (int i = 0; i < frac_pos; i++)
-		{
-			if (result[i] == '|')
-			{
-				ss << "√";
-				radicand = i + 1;
-			}
-			else
-				ss << result[i];
-		}
-		ss << endl;
-		written_characters = (radicand - 1) + (frac_pos + 1 - radicand) ;
-		ss << type_answer;
-		for (int i = 0; i < written_characters; i++)
-			ss << "―";
-		ss << endl << string(type_answer.length(), ' ');
-		ss << string(written_characters / 2 - denominator_length / 2, ' ') << result.substr(frac_pos + 1, res_length) << endl;
-		cout << ss.str();
-	}
-	else
-		printf("Solucion %s = %s\n", variable.c_str(), result.c_str());
+// string sec_ecuation_printer(vector<monomio> ecuacion)
+// {
+// 	stringstream ss, ssu, ssd;
+// 	char var;
+
+// 	var = ecuacion[0].get_variable();
+
 	
-}
+// }
