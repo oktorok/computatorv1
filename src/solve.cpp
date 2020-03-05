@@ -2,7 +2,6 @@
 
 static output_t solv_second_grade(vector<monomio> ecuacion, output_t solution)
 {
-	cout << printer(ecuacion, NULL) << endl;
 	if (ecuacion.size() == 3)
 		solution = simple_solve(ecuacion, solution);
 	else if (ecuacion[2].value && !ecuacion[2].get_grade())

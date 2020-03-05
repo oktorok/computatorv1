@@ -7,6 +7,7 @@ static output_t complex_sol(vector<monomio> ecuacion, output_t solution)
 	
 	ecuacion[2].set_variable("i");
 	ecuacion[2].sign = 1;
+	ecuacion[2].value = mySqrt(ecuacion[2].value);
 	solution.steps.push_back(printer(ecuacion, NULL));
 	sol.imaginary = true;
 	sol.sol.imaginary.imaginary = ecuacion[2].value * ecuacion[2].sign;

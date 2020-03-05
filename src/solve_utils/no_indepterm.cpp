@@ -19,6 +19,7 @@ output_t no_indepterm(vector<monomio> ecuacion, output_t solution)
 	ecuacion[1].set_grade(0);
 	ecuacion[1].set_variable("");
 	tmp = computatorv1(ecuacion, 1);
+	
 	equal_zero = create_zero_sol(ecuacion[0].get_variable());
 	ss << ecuacion[0].get_variable() << "(" << printer(sub_vector(ecuacion, 0, 2), NULL) << ")" << printer(sub_vector(ecuacion, 2, 4), NULL);
 	solution.steps.push_back(ss.str());

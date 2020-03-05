@@ -75,34 +75,8 @@ string printer (vector<monomio> ecuacion, string *result)
 			fraction.down.str("");
 			fraction.down << tmpfra.down.str();
 			reset = false;
+			sign = true;
 			iplus = 3;
-			// if (sign && ecuacion[i].sign < 0)
-			// 	ss << '-';
-			// else if (sign)
-			// 	ss << '+';
-			// num_length = ss.str().size() - ssu.str().size() - cuant_write * 2;
-			// for (int j = 0; j < num_length; j++)
-			// 	ssu << " ";
-			// den_length = ss.str().size() - ssd.str().size() - cuant_write * 2;
-			// for (int j = 0; j < den_length; j++)
-			// 	ssd << " ";
-			// tmpss << ecuacion[i].value;
-			// num_length = tmpss.str().size();
-			// tmpss.str("");
-			// tmpss << ecuacion[i + 2].value;
-			// den_length = tmpss.str().size();
-			// tmpss.str("");
-			// cuant_write = (num_length > den_length ? num_length : den_length);
-			// cuant_write += 2;
-			// for (int j = 0; j < cuant_write; j++)
-			//      ss << "―";
-			// for (int j = 0; j < (cuant_write - num_length) / 2; j++)
-			// 	ssu << " ";
-			// for (int j = 0; j < (cuant_write - den_length) / 2; j++)
-			// 	ssd << " ";
-			// ssu << ecuacion[i].value;
-			// ssd << ecuacion[i + 2].value;
-			//iplus = 3;
 		}
 		else
 		{

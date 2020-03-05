@@ -10,18 +10,33 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	vector<monomio> sorted;
 	monomio zero;
 	monomio equal;
-	int grade, equal_set = 0;
+	int grade, equal_set = -1;
 	vector<int> watched;
 	
 	equal.ini_monomio("=", 0, -1, 0, 0);
-	if (max_grade > 1)
-		equal_set = expresiones.size() - 2;
+	switch (max_grade)
+	{
+	case 1:
+		equal_set = 1;
+		break;
+	case 2:
+		if (expresiones.size() == 3)
+			equal_set = 1;
+		else if  (expresiones.size() == 4 && expresiones[1].get_variable() == "")
+		 	equal_set = 1;
+		else
+			equal_set = 3;
+		break;
+	}
+	cout << equal_set << endl;
+	//if (max_grade > 1 || max_grade )
+	//	equal_set = expresiones.size() - 2;
 	while (max_grade > -1)
 	{
-		if ((!max_grade && !equal_set) || (equal_set && sorted.size() == equal_set))
+		if (sorted.size() == equal_set)
 		{
 			sorted.push_back(equal);
-			equal_set = sorted.size();
+			equal_set = -1;
 		}
 		for (int i=0; i <= expresiones.size(); i++)
 		{
@@ -44,7 +59,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			}
 		}
 	}
-	if (!equal_set)
+	if (equal_set == (sorted.size() + 1))
 		sorted.push_back(equal);
 	if (sorted.back().get_grade() == -1)
 	{
@@ -69,7 +84,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
  			tmp = expresiones[j];
 			if (grade_act > max_grade)
 				max_grade = grade_act;
-			if (!tmp.value || grade_act != tmp.get_grade())
+			if (grade_act != tmp.get_grade())
 				continue;
 			if (grade_act == tmp.get_grade())
 			{
@@ -90,6 +105,11 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				break;
 		}
 	}
+	if (expresiones.back().get_grade() == -1)
+	{
+		tmp.ini_monomio("", 0, 0, 1, 1);
+		expresiones.push_back(tmp);
+	}
 	return expresiones;
 }
 
@@ -107,11 +127,11 @@ output_t computatorv1(vector<monomio> expresiones, int max_grade)
 
 	expresiones = solve_fractions(expresiones);
 	steps.push_back(printer(expresiones, NULL));
-	
-	expresiones = sort_expresion(expresiones, max_grade);
-	steps.push_back(printer(expresiones, NULL));
 
 	expresiones = simplify_expresion(expresiones);
+	steps.push_back(printer(expresiones, NULL));
+
+	expresiones = sort_expresion(expresiones, max_grade);
 	steps.push_back(printer(expresiones, NULL));
 
 	sol.steps = steps;
