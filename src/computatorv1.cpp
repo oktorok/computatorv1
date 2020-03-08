@@ -10,8 +10,9 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	vector<monomio> sorted;
 	monomio zero;
 	monomio equal;
-	int grade, equal_set = -1;
+	int grade, equal_set = -1, real_equal = 0;
 	vector<int> watched;
+
 	
 	equal.ini_monomio("=", 0, -1, 0, 0);
 	switch (max_grade)
@@ -28,9 +29,6 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			equal_set = 3;
 		break;
 	}
-	cout << equal_set << endl;
-	//if (max_grade > 1 || max_grade )
-	//	equal_set = expresiones.size() - 2;
 	while (max_grade > -1)
 	{
 		if (sorted.size() == equal_set)
@@ -51,12 +49,15 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			{
 				if (!expresiones[i].value)
 					continue;
-				if ((equal_set || !max_grade) && i >= equal_set)
+				if ((equal_set || !max_grade) && i >= equal_set && !real_equal)
 					expresiones[i].sign *= -1;
 				sorted.push_back(expresiones[i]);
 				watched.push_back(i);
 				break;
 			}
+			else if (expresiones[i].get_variable() == "=")
+				real_equal = 1;
+				
 		}
 	}
 	if (equal_set == (sorted.size() + 1))
@@ -133,6 +134,7 @@ output_t computatorv1(vector<monomio> expresiones, int max_grade)
 
 	expresiones = sort_expresion(expresiones, max_grade);
 	steps.push_back(printer(expresiones, NULL));
+	// cout << printer(expresiones, NULL) << endl;
 
 	sol.steps = steps;
 	sol = solve(expresiones, sol);

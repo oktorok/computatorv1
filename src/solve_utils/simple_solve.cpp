@@ -4,15 +4,19 @@
 static output_t complex_sol(vector<monomio> ecuacion, output_t solution)
 {
 	solution_t sol;
+	string var;
 	
 	ecuacion[2].set_variable("i");
 	ecuacion[2].sign = 1;
 	ecuacion[2].value = mySqrt(ecuacion[2].value);
+	var = ecuacion[0].get_variable();
+	ecuacion[0].set_variable(var + "₁");
 	solution.steps.push_back(printer(ecuacion, NULL));
 	sol.imaginary = true;
 	sol.sol.imaginary.imaginary = ecuacion[2].value * ecuacion[2].sign;
 	solution.solutions.push_back(sol);
 	ecuacion[2].sign *= -1;
+	ecuacion[0].set_variable(var + "₂");
 	solution.steps.push_back(printer(ecuacion, NULL));
 	sol.sol.imaginary.imaginary = ecuacion[2].value * ecuacion[2].sign;
 	solution.solutions.push_back(sol);
@@ -22,15 +26,19 @@ static output_t complex_sol(vector<monomio> ecuacion, output_t solution)
 static output_t real_sol(vector<monomio> ecuacion, output_t solution)
 {
 	solution_t sol;
+	string var;
 	
 	ecuacion[2].value = mySqrt(ecuacion[2].value);
+	var = ecuacion[0].get_variable();
+	ecuacion[0].set_variable(var + "₁");
 	solution.steps.push_back(printer(ecuacion, NULL));
 	sol.imaginary = false;
-	sol.sol.real = ecuacion[2].value;
+	sol.sol.real = ecuacion[2].value;	
 	solution.solutions.push_back(sol);
 	ecuacion[2].value *= -1;
 	if (ecuacion[2].value == sol.sol.real)
 		return solution;
+	ecuacion[0].set_variable(var + "₂");
 	solution.steps.push_back(printer(ecuacion, NULL));
 	sol.sol.real = ecuacion[2].value;
 	solution.solutions.push_back(sol);

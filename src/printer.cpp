@@ -16,20 +16,20 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 		fraction.middle << '-';
 	else if (sign)
 		fraction.middle << '+';
-	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
-	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
+	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2 - 1;
+	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2 - 1;
 	for (int j = 0; j < num_length; j++)
 		fraction.up << " ";
 	for (int j = 0; j < den_length; j++)
 		fraction.down << " ";
-	tmpss << ecuacion[slash - 1].value;
+	tmpss << ecuacion[slash - 1].value * ecuacion[slash - 1].sign;
 	num_length = tmpss.str().size();
 	tmpss.str("");
-	tmpss << ecuacion[slash + 1].value;
+	tmpss << ecuacion[slash + 1].value * ecuacion[slash + 1].sign;
 	den_length = tmpss.str().size();
 	tmpss.str("");
 	cuant_write = (num_length > den_length ? num_length : den_length);
-	cuant_write += 2;
+	//cuant_write += 2;
 	for (int j = 0; j < cuant_write; j++)
 	{
 		fraction.middle << "―";
@@ -38,8 +38,8 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 		if (j < (cuant_write - den_length) / 2)
 			fraction.down << " ";
 	}
-	fraction.up << ecuacion[slash - 1].value;
-	fraction.down << ecuacion[slash + 1].value;
+	fraction.up << ecuacion[slash - 1].value * ecuacion[slash - 1].sign;
+	fraction.down << ecuacion[slash + 1].value * ecuacion[slash + 1].sign;
 	fraction.middle << ecuacion[slash + 1].get_variable();
 	return fraction;
 }
