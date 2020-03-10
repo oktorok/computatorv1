@@ -8,7 +8,7 @@ static monomio create_zero_sol(string var)
 	return zero_sol;
 }
 
-output_t no_indepterm(vector<monomio> ecuacion, output_t solution)
+output_t no_indepterm(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	monomio equal_zero;
 	stringstream ss;
@@ -22,21 +22,25 @@ output_t no_indepterm(vector<monomio> ecuacion, output_t solution)
 	ecuacion[1].set_variable("");
 	equal_zero = create_zero_sol(ecuacion[0].get_variable());
 	ss << var << "(" << printer(sub_vector(ecuacion, 0, 2), NULL) << ")" << printer(sub_vector(ecuacion, 2, 4), NULL);
-	solution.steps.push_back(ss.str());
+	if (flags & STEPS)
+		solution.steps.push_back(ss.str());
 	ss.str("");
 	ss << var + "₁" << "=0";
 	sol.imaginary = false;
 	sol.sol.real = 0;
 	solution.solutions.push_back(sol);
-	solution.steps.push_back(ss.str());
+	if (flags & STEPS)
+		solution.steps.push_back(ss.str());
 
 	ecuacion[0].set_variable(var + "₂");
-	solution.steps.push_back(printer(ecuacion, NULL));
-	tmp = computatorv1(ecuacion, 1);
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
+	tmp = computatorv1(ecuacion, 1, STEPS);
 
 
 	solution.solutions.insert(solution.solutions.end(), tmp.solutions.begin(), tmp.solutions.end());
-	solution.steps.insert(solution.steps.end(), tmp.steps.begin(), tmp.steps.end());
+	if (flags & STEPS)
+		solution.steps.insert(solution.steps.end(), tmp.steps.begin(), tmp.steps.end());
 	
 	return solution;
 }

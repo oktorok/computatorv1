@@ -17,6 +17,8 @@
 #define SQR_ERR 0.001
 #define SUPERINDEX_2 "\u00B2"
 #define SUPERINDEX_4 "\u2074"
+#define STEPS 1 << ('s' - 'a')
+#define HELP 1 << ('h' - 'a')
 
 using namespace std;
 #include "templates.h"
@@ -28,8 +30,6 @@ typedef struct fraction_str_s {
 } fraction_str_t;
 
 typedef struct complex_solution_s {
-	char real_type;
-	char imaginary_type;
 	double real;
 	double imaginary;
 } complex_solution_t;
@@ -122,13 +122,13 @@ monomio calc_num(monomio, monomio, bool);
 int take_grade(int &, string);
 string take_var(int &, string);
 double take_value(int &, string);
-output_t computatorv1(vector<monomio>, int );
-output_t solve(vector<monomio> , output_t);
-output_t no_indepterm(vector<monomio>, output_t);
+output_t computatorv1(vector<monomio> &, int, int);
+output_t solve(vector<monomio> , output_t, int);
+output_t no_indepterm(vector<monomio>, output_t, int);
 vector<monomio> solve_fractions(vector<monomio>);
-output_t solv_first_grade(vector<monomio>, output_t);
-output_t simple_solve(vector<monomio>, output_t);
-output_t normal_solve(vector<monomio>, output_t);
+output_t solv_first_grade(vector<monomio>, output_t, int);
+output_t simple_solve(vector<monomio>, output_t, int);
+output_t normal_solve(vector<monomio>, output_t, int);
 complex_solution_t create_complex(vector<monomio>);
 string printer(vector<monomio>, string *);
 double mySqrt(double);

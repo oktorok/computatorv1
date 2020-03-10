@@ -17,7 +17,7 @@ static vector<monomio> prepare_final_expresion(string var, monomio numerator, mo
 	return expresion;
 }
 
-static output_t real_solution(vector<monomio> ecuacion, output_t solution)
+static output_t real_solution(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	solution_t sol;
 	monomio num;
@@ -26,30 +26,35 @@ static output_t real_solution(vector<monomio> ecuacion, output_t solution)
 	sol.imaginary = false;
 	if (solution.solutions.size() && solution.solutions.back().sol.real == ecuacion.back().value)
 		return solution;
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 	ecuacion = solve_fractions(ecuacion);
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 	sol.sol.real = ecuacion.back().value;
 	solution.solutions.push_back(sol);
 	return solution;
 }
 
-static output_t imaginary_solution(vector<monomio> ecuacion, output_t solution)
+static output_t imaginary_solution(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	solution_t sol;
 	string var;
 	
 	sol.imaginary = true;
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 	ecuacion = solve_fractions(ecuacion);
 	var = ecuacion[0].get_variable();
 	ecuacion[0].set_variable(var + "₁");
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 	sol.sol.imaginary = create_complex(sub_vector(ecuacion, 2, 4));
 	solution.solutions.push_back(sol);
 	ecuacion[3].sign *= -1;
 	ecuacion[0].set_variable(var + "₂");
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 	sol.sol.imaginary = create_complex(sub_vector(ecuacion, 2, 4));
 	solution.solutions.push_back(sol);
 	return solution;
@@ -77,7 +82,7 @@ static vector<monomio> prepare_complex_expresion(monomio sumand, monomio radican
 	return complex_expresion;
 }
 
-static string print_numerator(vector<monomio> ecuacion, int &num_length, int var_length, int phase)
+static string print_numerator(vector<monomio> ecuacion, int var_length, int phase)
 {
 	stringstream tmpstrm, num;
 	string numl, numr;
@@ -94,15 +99,18 @@ static string print_numerator(vector<monomio> ecuacion, int &num_length, int var
 	if (phase == 2)
 	{
 		tmpstrm << "±i√";
+		num << "   ";
 	}
 	else
+	{
 		tmpstrm << "±√";
+		num << "  ";
+	}
 	if (phase == 1)
 		tmpstrm << ecuacion[1].value * ecuacion[1].value - 4 * ecuacion[0].value * ecuacion[0].sign * ecuacion[2].value * ecuacion[2].sign;
 	else if (phase == 2)
 	{
 		tmpstrm << -1 * (ecuacion[1].value * ecuacion[1].value - 4 * ecuacion[0].value * ecuacion[0].sign * ecuacion[2].value * ecuacion[2].sign);
-		num << " ";
 		phase = 0;
 	}
 	else
@@ -111,12 +119,11 @@ static string print_numerator(vector<monomio> ecuacion, int &num_length, int var
 	l = numr.length();
 	for (int i = 0; i < l - 6 + phase; i++)
 		num << "_";
-	num_length = numr.length() + numl.length();
 	num << "\n" << numl << numr;
 	return num.str();
 }
 
-static string print_denominator(vector<monomio> ecuacion, int num_length, int phase)
+static string print_denominator(vector<monomio> ecuacion, int num_length, int var_length, int phase)
 {
 	int j = 0, l;
 	stringstream den, tmpstrm;
@@ -127,7 +134,10 @@ static string print_denominator(vector<monomio> ecuacion, int num_length, int ph
 	else
 		tmpstrm << "2*" << ecuacion[0].value * ecuacion[0].sign;
 	tmp = tmpstrm.str();
+	cout << num_length << endl;;
 	l = tmp.length();
+	for (int i = 0; i < var_length; i++)
+		den << " ";
 	while (j < num_length)
 	{
 		if (j == (num_length - l)/2)
@@ -153,50 +163,55 @@ static string printer2grade(vector<monomio> ecuacion, int phase)
 	tmpstrm << ecuacion[0].get_variable() << "=";
 	tmp = tmpstrm.str();
 	l = tmp.length();
-	num = print_numerator(ecuacion, num_length, l, phase);
-	den = print_denominator(ecuacion, num_length, phase);
-	for (int i = 0; i < l; i++)
-		full << " ";
+	num = print_numerator(ecuacion, l, phase);
+	num_length = num.length() / 2 - l - 2;
+	den = print_denominator(ecuacion, num_length, l, phase);
 	full << num << "\n";
 	full << tmp;
-	l = num.length() / 2 - 3;
-	for (int i = 0; i < l; i++)
+	for (int i = 0; i < num_length; i++)
 		full << "―";
 	full << "\n" << den;
 	return full.str();
 }
 
-output_t normal_solve(vector<monomio> ecuacion, output_t solution)
+output_t normal_solve(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	monomio sumand, radicand, den, num;
 	string tmp;
 	
-	solution.steps.push_back(printer(ecuacion, NULL));
+	if (flags & STEPS)
+		solution.steps.push_back(printer(ecuacion, NULL));
 
 	sumand = calc_sumand(ecuacion[1]);
 	radicand = calc_radicand(ecuacion[0], ecuacion[1], ecuacion[2]);
 	den = calc_den(ecuacion[0]);
 
-	solution.steps.push_back(printer2grade(ecuacion, 0));
+	if (flags & STEPS)
+		solution.steps.push_back(printer2grade(ecuacion, 0));
 	radicand.value = mySqrt(radicand.value);
 	if (radicand.sign == -1)
 	{
 		radicand.sign = 1;
-		solution.steps.push_back(printer2grade(ecuacion, 1));
-		solution.steps.push_back(printer2grade(ecuacion, 2));
+		if (flags & STEPS)
+			solution.steps.push_back(printer2grade(ecuacion, 1));
+		if (flags & STEPS)
+			solution.steps.push_back(printer2grade(ecuacion, 2));
 		ecuacion = prepare_complex_expresion(sumand, radicand, den);
-		solution = imaginary_solution(ecuacion, solution);
+		solution = imaginary_solution(ecuacion, solution, flags);
 	}
 	else
 	{
-
+		tmp = ecuacion[0].get_variable();
 		num = calc_num(sumand, radicand, true);
-		solution.steps.push_back(printer2grade(ecuacion, 1));
+		if (flags & STEPS)
+			solution.steps.push_back(printer2grade(ecuacion, 1));
 		ecuacion = prepare_final_expresion(ecuacion[0].get_variable(), num, den);
-		solution = real_solution(ecuacion, solution);
+		ecuacion[0].set_variable(tmp + "₁");
+		solution = real_solution(ecuacion, solution, flags);
 		num = calc_num(sumand, radicand, false);
 		ecuacion = prepare_final_expresion(ecuacion[0].get_variable(), num, den);
-		solution = real_solution(ecuacion, solution);
+		ecuacion[0].set_variable(tmp + "₂");
+		solution = real_solution(ecuacion, solution, flags);
 	}
 
 	return solution;

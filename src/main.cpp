@@ -1,62 +1,99 @@
 #include "computator.h"
 
+int set_flags(int argc, char **argv)
+{
+	int j = 0,flags = 0;
+	
+	for (int i = 0; i < argc; i++)
+	{
+		if (argv[i][0] == '-')
+		{
+			while (argv[i][j] == '-')
+				j++;
+			flags |= 1 << argv[i][j] - 97;
+		}
+	}
+	return flags;
+}
+
+vector<monomio> reduce_form(vector<monomio> ecuacion)
+{
+	if (ecuacion[0].get_grade() == 1)
+		ecuacion = move_indepterm(ecuacion);
+	reverse(ecuacion.begin(), ecuacion.end() - 2);
+	return ecuacion;
+}
 
 int main(int argc, char **argv) {
 
 	vector<monomio> expresiones;
 	vector<string> steps;
-	int mon_cuant, max_grade;
-	string *result;
+	int mon_cuant, max_grade, flags = 0;
+	string var;
 	output_t sol;
+	
 
 	setlocale(LC_ALL, "");
-	if (argc < 2)
+	if (argc == 1)
 	{
 		cout << "No expression found" << endl;
 		return (0);
 	}
-	expresiones = parsing3(argv[1], max_grade);
-	sol = computatorv1(expresiones, max_grade);
-	cout << "Solving Steps:" << endl;
+	
+	flags = set_flags(argc, argv);
+	if (flags & HELP)
+	{
+		cout << "Usage: ./computator [OPTIONS] [EXPRESSION]" << endl << "\t-s Show steps." << endl; 
+		return 1;
+	}
+	expresiones = parsing3(argv[argc - 1], max_grade);
+	if (!expresiones.size())
+	{
+		cout << "The expression \"" << argv[argc - 1] <<"\" is not a well formed polynomial expression" << endl;
+		return -1;
+	}
+	sol = computatorv1(expresiones, max_grade, flags);
+	for (int i = 0; i < expresiones.size(); i++)
+	{
+		var = expresiones[i].get_variable();
+		if (var != "")
+			break;
+	}
+	if (flags & STEPS)
+		cout << "Solving Steps:" << endl;
 	sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
 	for (int i=0; i < sol.steps.size(); i++)
-		cout << sol.steps[i] << endl;
-	return 0;
-	/*
-	expresiones = parsing(argv[1]);
-	mon_cuant = expresiones.size();
-	//printf("tengo %i monomios\n", mon_cuant);
-	//for (int i = 0; i < mon_cuant; i++)
-	//{
-	//	if (expresiones[i].get_variable() != "")
-	//		printf("Monomio %i: %i%s^%i\n", i, expresiones[i].value, expresiones[i].get_variable().c_str(), expresiones[i].get_grade());
-	//	else
-	//		printf("Monomio %i: %i\n", i, expresiones[i].value);
-	//}
-	printf("Expresion inicial\n");
-	printer(expresiones, NULL);	
-	for (int i = 0; i < mon_cuant; i++)
+		cout << sol.steps[i] << endl << endl;
+
+	if (printer(expresiones, NULL) == "0=0")
 	{
-		for (int j = 1 + i ; j < mon_cuant; j++)
+		cout << "All real numbers are solution for the ecuation" << endl;
+		return 0;
+	}
+	cout << "Reduced form: " << printer(reduce_form(expresiones), NULL) << endl;
+	cout << "Polynomial degree: " << max_grade << endl;
+	if (max_grade == 2)
+	{
+		if (sol.solutions[0].imaginary)
 		{
-			if (expresiones[i].is_compt(expresiones[j]))
-			{
-				expresiones[i].sum_monomios(expresiones[j]);
-				expresiones.erase(expresiones.begin() + j);
-				mon_cuant = expresiones.size();
-				j--;
-			}
+			cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
+			cout << var << "₁" << "=" << sol.solutions[0].sol.imaginary.real << (sol.solutions[0].sol.imaginary.imaginary < 0 ? "" : "+") << sol.solutions[0].sol.imaginary.imaginary << "i" << endl;
+		
+			cout << var << "₂" << "=" << sol.solutions[1].sol.imaginary.real << (sol.solutions[1].sol.imaginary.imaginary < 0 ?"" : "+") << sol.solutions[1].sol.imaginary.imaginary << "i" << endl;
+		}
+		else
+		{
+			cout << "Discriminant is strictly positive, the two real solutions are:" << endl;
+			cout << var << "₁" << "=" << sol.solutions[0].sol.real << endl;
+			cout << var << "₂" << "=" << sol.solutions[1].sol.real << endl;
 		}
 	}
-	sort(expresiones.begin(), expresiones.end(), compareGrades);
-	result = solve(&expresiones, &steps);
-	cout << "Expresion reducida" << endl;
-	printer(expresiones, NULL);
-	printer2(expresiones[0].get_variable(), result[0], "Solucion 1: ");
-	if (expresiones[0].get_grade() == 2)
-		printer2(expresiones[0].get_variable(), result[1], "Solucion 2: ");
-	for (int i = 0; i < steps.size(); i++)
-		printer2("X", steps[i], "");
-	//if (result)
-	//	delete(result);*/
+	else if (max_grade == 1)
+	{
+		cout << "The solution is:" << endl;
+		cout << var << "=" << sol.solutions[0].sol.real << endl;
+	}
+	else
+		cout << "The polynomial degree is strictly grater than 2, I can't solve." << endl;
+	return 0;
 }

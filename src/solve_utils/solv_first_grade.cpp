@@ -1,15 +1,17 @@
 #include "computator.h"
 
-output_t solv_first_grade(vector<monomio> ecuacion, output_t solution)
+output_t solv_first_grade(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	solution_t sol;
 
 	if (ecuacion[0].value != 1)
 	{
-		ecuacion = go_div(ecuacion);
-		solution.steps.push_back(printer(ecuacion,NULL));
+		ecuacion = go_div(ecuacion);		
+		if (flags & STEPS)
+			solution.steps.push_back(printer(ecuacion,NULL));
 		ecuacion = solve_fractions(ecuacion);
-		solution.steps.push_back(printer(ecuacion, NULL));
+		if (flags & STEPS)
+			solution.steps.push_back(printer(ecuacion, NULL));
 	}
 	if (ecuacion[0].sign == -1)
 	{

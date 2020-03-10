@@ -16,8 +16,14 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 		fraction.middle << '-';
 	else if (sign)
 		fraction.middle << '+';
-	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2 - 1;
-	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2 - 1;
+	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
+	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
+	cout << ecuacion.size() << endl;
+	if (ecuacion.size() == 5 && (ecuacion[0].get_variable().find("₁") != -1 || ecuacion[0].get_variable().find("₂") != -1))
+	{
+		num_length -= 2;
+		den_length -= 2;
+	}
 	for (int j = 0; j < num_length; j++)
 		fraction.up << " ";
 	for (int j = 0; j < den_length; j++)
@@ -29,7 +35,6 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	den_length = tmpss.str().size();
 	tmpss.str("");
 	cuant_write = (num_length > den_length ? num_length : den_length);
-	//cuant_write += 2;
 	for (int j = 0; j < cuant_write; j++)
 	{
 		fraction.middle << "―";

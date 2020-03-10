@@ -9,6 +9,7 @@
 #define POTENCE 5
 #define SPACE 7
 #define ERROR 6
+#define PRODUCT 8
 
 static int class_character(char a)
 {
@@ -26,6 +27,8 @@ static int class_character(char a)
 		return POTENCE;
 	else if (isspace(a))
 		return SPACE;
+	else if (a == '*')
+		return PRODUCT;
 	else
 		return ERROR;
 }
@@ -87,12 +90,22 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			break;
 		case POTENCE:
 			grade = take_grade(i, expresion);
+			if (!grade)
+				var = "";
 			if (grade > max_grade)
 				max_grade = grade;
 			break;
+		case PRODUCT:
+			i++;
+			break;
+		default:
+
+			return (vector<monomio>){};
 		}
 		add = (add ? add - 1 : 0);
 	}
+	if (side == 1)
+		return (vector<monomio>){};
 	tmp.ini_monomio(var, value, grade, sign, side);
 	ecuacion.push_back(tmp);
 	return ecuacion;
