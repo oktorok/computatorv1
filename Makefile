@@ -1,5 +1,5 @@
 NAME = computator
-#CPPFLAGS = -Wall -Wextra -Werror
+CPPFLAGS = -Wall -Wextra -Werror
 CC = g++
 
 SRC =	main.cpp \

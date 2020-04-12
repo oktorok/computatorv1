@@ -5,7 +5,7 @@ vector<monomio> solve_fractions(vector<monomio> expresiones)
 	vector<monomio>::iterator it1, it2;
 	monomio num, *den;
 	
-	for (int i=1; i < expresiones.size(); i++)
+	for (size_t i=1; i < expresiones.size(); i++)
 	{
 		if (expresiones[i].get_variable() == "/")
 		{

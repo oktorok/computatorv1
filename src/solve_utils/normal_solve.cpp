@@ -4,20 +4,19 @@ static vector<monomio> prepare_final_expresion(string var, monomio numerator, mo
 {
 	vector<monomio> expresion;
 	monomio tmp;
-	short sign;
 
-	tmp.ini_monomio(var, 1, 0, 1, 1);
+	tmp.ini_monomio(var, 1, 0, 1);
 	expresion.push_back(tmp);
-	tmp.ini_monomio("=", 0, -1, 1, 1);
+	tmp.ini_monomio("=", 0, -1, 1);
 	expresion.push_back(tmp);
 	expresion.push_back(numerator);
-	tmp.ini_monomio("/", 0, -1, 1, 1);
+	tmp.ini_monomio("/", 0, -1, 1);
 	expresion.push_back(tmp);
 	expresion.push_back(denominator);
 	return expresion;
 }
 
-static output_t real_solution(vector<monomio> ecuacion, output_t solution, int flags)
+static output_t real_solution(vector<monomio> ecuacion, output_t solution, int flags, string sol_num)
 {
 	solution_t sol;
 	monomio num;
@@ -27,11 +26,19 @@ static output_t real_solution(vector<monomio> ecuacion, output_t solution, int f
 	if (solution.solutions.size() && solution.solutions.back().sol.real == ecuacion.back().value)
 		return solution;
 	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
+	{
+		tmp = "Solving Numerator Solution " + sol_num;
+		solution.guide.push_back(tmp);
+		solution.steps.push_back(printer(ecuacion));
+	}
 	ecuacion = solve_fractions(ecuacion);
 	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
-	sol.sol.real = ecuacion.back().value;
+	{
+		tmp = "Solution " + sol_num;
+		solution.guide.push_back(tmp);
+		solution.steps.push_back(printer(ecuacion));
+	}
+	sol.sol.real = ecuacion.back().value * ecuacion.back().sign;
 	solution.solutions.push_back(sol);
 	return solution;
 }
@@ -39,22 +46,41 @@ static output_t real_solution(vector<monomio> ecuacion, output_t solution, int f
 static output_t imaginary_solution(vector<monomio> ecuacion, output_t solution, int flags)
 {
 	solution_t sol;
+	monomio tmp;
 	string var;
 	
 	sol.imaginary = true;
 	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
+	{
+		tmp.ini_monomio("±", 0, -1, 0);
+		ecuacion.insert(ecuacion.begin()+5, tmp);
+		solution.guide.push_back("Spliting in Real and Complex Part:");
+		solution.steps.push_back(printer(ecuacion));
+		//		ecuacion.erase(ecuacion.begin()+5);
+	}
 	ecuacion = solve_fractions(ecuacion);
 	var = ecuacion[0].get_variable();
+	if (flags & STEPS)
+	{
+		solution.guide.push_back("Solving Fractions:");
+		solution.steps.push_back(printer(ecuacion));
+		ecuacion.erase(ecuacion.begin() + 3);
+	}
 	ecuacion[0].set_variable(var + "₁");
 	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
+	{
+		solution.guide.push_back("First Solution:");
+		solution.steps.push_back(printer(ecuacion));
+	}
 	sol.sol.imaginary = create_complex(sub_vector(ecuacion, 2, 4));
 	solution.solutions.push_back(sol);
 	ecuacion[3].sign *= -1;
 	ecuacion[0].set_variable(var + "₂");
 	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
+	{
+		solution.guide.push_back("Second Solution");
+		solution.steps.push_back(printer(ecuacion));
+	}
 	sol.sol.imaginary = create_complex(sub_vector(ecuacion, 2, 4));
 	solution.solutions.push_back(sol);
 	return solution;
@@ -66,9 +92,9 @@ static vector<monomio> prepare_complex_expresion(monomio sumand, monomio radican
 	monomio tmp, slash, equal;
 	vector<monomio> complex_expresion;
 
-	tmp.ini_monomio("x", 1, 1, 1, 1);
-	equal.ini_monomio("=", 0, -1, 1, 1);
-	slash.ini_monomio("/", 0, -1, 1, 1);
+	tmp.ini_monomio("x", 1, 1, 1);
+	equal.ini_monomio("=", 0, -1, 1);
+	slash.ini_monomio("/", 0, -1, 1);
 	complex_expresion.push_back(tmp);
 	complex_expresion.push_back(equal);
 	complex_expresion.push_back(sumand);
@@ -134,7 +160,6 @@ static string print_denominator(vector<monomio> ecuacion, int num_length, int va
 	else
 		tmpstrm << "2*" << ecuacion[0].value * ecuacion[0].sign;
 	tmp = tmpstrm.str();
-	cout << num_length << endl;;
 	l = tmp.length();
 	for (int i = 0; i < var_length; i++)
 		den << " ";
@@ -179,23 +204,34 @@ output_t normal_solve(vector<monomio> ecuacion, output_t solution, int flags)
 	monomio sumand, radicand, den, num;
 	string tmp;
 	
-	if (flags & STEPS)
-		solution.steps.push_back(printer(ecuacion, NULL));
-
+	//if (flags & STEPS)
+	//{
+	//	solution.guide.push_back("Seconddddd Grade Solving Formula:");
+	//	solution.steps.push_back(printer(ecuacion));
+	//}
 	sumand = calc_sumand(ecuacion[1]);
 	radicand = calc_radicand(ecuacion[0], ecuacion[1], ecuacion[2]);
 	den = calc_den(ecuacion[0]);
 
 	if (flags & STEPS)
+	{
+		solution.guide.push_back("Second Grade Solving Formula:");
 		solution.steps.push_back(printer2grade(ecuacion, 0));
+	}
 	radicand.value = mySqrt(radicand.value);
+	if (flags & STEPS)
+	{
+		solution.guide.push_back("Solving Radicand:");
+		solution.steps.push_back(printer2grade(ecuacion, 1));
+	}
 	if (radicand.sign == -1)
 	{
 		radicand.sign = 1;
 		if (flags & STEPS)
-			solution.steps.push_back(printer2grade(ecuacion, 1));
-		if (flags & STEPS)
+		{
+			solution.guide.push_back("Changing Sign to Radicand to i");
 			solution.steps.push_back(printer2grade(ecuacion, 2));
+		}
 		ecuacion = prepare_complex_expresion(sumand, radicand, den);
 		solution = imaginary_solution(ecuacion, solution, flags);
 	}
@@ -203,15 +239,15 @@ output_t normal_solve(vector<monomio> ecuacion, output_t solution, int flags)
 	{
 		tmp = ecuacion[0].get_variable();
 		num = calc_num(sumand, radicand, true);
-		if (flags & STEPS)
-			solution.steps.push_back(printer2grade(ecuacion, 1));
+		//if (flags & STEPS)
+		//	solution.steps.push_back(printer2grade(ecuacion, 1));
 		ecuacion = prepare_final_expresion(ecuacion[0].get_variable(), num, den);
 		ecuacion[0].set_variable(tmp + "₁");
-		solution = real_solution(ecuacion, solution, flags);
+		solution = real_solution(ecuacion, solution, flags, "1");
 		num = calc_num(sumand, radicand, false);
 		ecuacion = prepare_final_expresion(ecuacion[0].get_variable(), num, den);
 		ecuacion[0].set_variable(tmp + "₂");
-		solution = real_solution(ecuacion, solution, flags);
+		solution = real_solution(ecuacion, solution, flags, "2");
 	}
 
 	return solution;

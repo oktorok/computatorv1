@@ -40,7 +40,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 	short sign = 1;
 	string var = "";
         double value = 1;
-	short side = 1, add = 0;
+	short add = 0, exist_equal = 0;
 	monomio tmp;
 
 	max_grade = 1;
@@ -54,7 +54,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		case OPERATION:
 			if (i && !add)
 			{
-				tmp.ini_monomio(var, value, grade, sign, side);       
+				tmp.ini_monomio(var, value, grade, sign);
 				ecuacion.push_back(tmp);
 			}
     			sign = 1;
@@ -65,15 +65,15 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			value = 1;
 			if (t == EQUAL)
 			{
-				side = -1;
+				exist_equal += 1;
 				add = 2;
-				tmp.ini_monomio("=", 0, -1, 0, 0);
+				tmp.ini_monomio("=", 0, -1, 0);
 				ecuacion.push_back(tmp);
 			}
 			else if (t == SLASH)
 			{
 				add = 2;
-				tmp.ini_monomio("/", 0, -1, 0, 0);
+				tmp.ini_monomio("/", 0, -1, 0);
 				ecuacion.push_back(tmp);	
 			}
 			break;
@@ -104,24 +104,9 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		}
 		add = (add ? add - 1 : 0);
 	}
-	if (side == 1)
+	if (exist_equal != 1)
 		return (vector<monomio>){};
-	tmp.ini_monomio(var, value, grade, sign, side);
+	tmp.ini_monomio(var, value, grade, sign);
 	ecuacion.push_back(tmp);
 	return ecuacion;
 }
-
-// int main(void)
-// {
-// 	vector<monomio> a;
-// 	a = parsing3("x^2 + 2.2x - 3.003/23 = 0.23");
-// 	cout << a.size() << endl;
-// 	for(int i=0; i<a.size(); ++i)
-// 	{
-// 		cout << ((a[i].sign == 1) ? '+' : '-');
-// 		cout << ((a[i].value_type == 'l') ? a[i].value.l : a[i].value.d);
-// 		cout << a[i].get_variable();
-// 		cout << '^' << a[i].get_grade();
-// 	}
-// }
-       

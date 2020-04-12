@@ -8,10 +8,16 @@ output_t solv_first_grade(vector<monomio> ecuacion, output_t solution, int flags
 	{
 		ecuacion = go_div(ecuacion);		
 		if (flags & STEPS)
-			solution.steps.push_back(printer(ecuacion,NULL));
+		{
+			solution.guide.push_back("Solving Fractions:");
+			solution.steps.push_back(printer(ecuacion));
+		}
 		ecuacion = solve_fractions(ecuacion);
 		if (flags & STEPS)
-			solution.steps.push_back(printer(ecuacion, NULL));
+		{
+			solution.guide.push_back("Solution:");
+			solution.steps.push_back(printer(ecuacion));
+		}
 	}
 	if (ecuacion[0].sign == -1)
 	{

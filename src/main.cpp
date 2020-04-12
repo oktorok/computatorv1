@@ -10,7 +10,7 @@ int set_flags(int argc, char **argv)
 		{
 			while (argv[i][j] == '-')
 				j++;
-			flags |= 1 << argv[i][j] - 97;
+			flags |= 1 << (argv[i][j] - 97);
 		}
 	}
 	return flags;
@@ -21,14 +21,92 @@ vector<monomio> reduce_form(vector<monomio> ecuacion)
 	if (ecuacion[0].get_grade() == 1)
 		ecuacion = move_indepterm(ecuacion);
 	reverse(ecuacion.begin(), ecuacion.end() - 2);
+	for (size_t i = 0; i < ecuacion.size(); i++)
+	{
+		if (ecuacion[i].get_grade() == -1)
+			break;
+		else if (!ecuacion[i].value)
+			ecuacion.erase(ecuacion.begin() + i);
+	}
 	return ecuacion;
+}
+
+void pretty_print_sols(int flags, output_t sol, vector<monomio> expresiones, int max_grade)
+{
+	string var, tmp = "";
+	double r,i;
+	
+	for (size_t i = 0; i < expresiones.size(); i++)
+	{
+		var = expresiones[i].get_variable();
+		if (var != "")
+			break;
+	}
+	if (flags & STEPS)
+	{
+		cout << "Solving Steps:" << endl;
+		//sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
+		for (size_t i=0; i < sol.steps.size(); i++)
+		{
+			if (sol.steps[i] == tmp)
+				continue;
+			tmp = sol.steps[i];
+			//if (i < sol.guide.size())
+			cout << sol.guide[i] << endl;
+			cout << tmp << endl << endl;
+		}
+	}
+	if (printer(expresiones) == "0=0")
+	{
+		cout << "All real numbers are solution for the ecuation" << endl;
+		return;
+	}
+	else if (expresiones[0].get_variable() == "")
+	{
+		cout << "Does not exist solution for the ecuation" << endl;
+		return;
+	}
+	cout << "Reduced form: " << printer(reduce_form(expresiones)) << endl;
+	cout << "Polynomial degree: " << max_grade << endl;
+	if (max_grade == 2)
+	{
+		if (sol.solutions[0].imaginary)
+		{
+			r = sol.solutions[0].sol.imaginary.real;
+			i = sol.solutions[0].sol.imaginary.imaginary;
+			cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
+			cout << var << "₁" << "=";
+			if (r)
+				cout << r << (i < 0 ? "" : "+");
+			cout << i << "i" << endl;
+			r = sol.solutions[1].sol.imaginary.real;
+			i = sol.solutions[1].sol.imaginary.imaginary;
+			cout << var << "₂" << "=";
+			if (r)
+				cout << r << (i < 0 ? "" : "+");
+			cout << i << "i" << endl;
+		}
+		else
+		{
+			cout << "Discriminant is strictly positive, the two real solutions are:" << endl;
+			cout << var << "₁" << "=" << sol.solutions[0].sol.real << endl;
+			cout << var << "₂" << "=" << sol.solutions[1].sol.real << endl;
+		}
+	}
+	else if (max_grade == 1)
+	{
+		cout << "The solution is:" << endl;
+		cout << var << "=" << sol.solutions[0].sol.real << endl;
+	}
+	else
+		cout << "The polynomial degree is strictly grater than 2, I can't solve." << endl;
 }
 
 int main(int argc, char **argv) {
 
 	vector<monomio> expresiones;
 	vector<string> steps;
-	int mon_cuant, max_grade, flags = 0;
+	int  max_grade, flags = 0;
 	string var;
 	output_t sol;
 	
@@ -53,47 +131,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	sol = computatorv1(expresiones, max_grade, flags);
-	for (int i = 0; i < expresiones.size(); i++)
-	{
-		var = expresiones[i].get_variable();
-		if (var != "")
-			break;
-	}
-	if (flags & STEPS)
-		cout << "Solving Steps:" << endl;
-	sol.steps.erase( unique( sol.steps.begin(), sol.steps.end() ), sol.steps.end() );
-	for (int i=0; i < sol.steps.size(); i++)
-		cout << sol.steps[i] << endl << endl;
+	pretty_print_sols(flags, sol, expresiones, max_grade);
 
-	if (printer(expresiones, NULL) == "0=0")
-	{
-		cout << "All real numbers are solution for the ecuation" << endl;
-		return 0;
-	}
-	cout << "Reduced form: " << printer(reduce_form(expresiones), NULL) << endl;
-	cout << "Polynomial degree: " << max_grade << endl;
-	if (max_grade == 2)
-	{
-		if (sol.solutions[0].imaginary)
-		{
-			cout << "Discriminant is strictly negative, the two complex solutions are:" << endl;
-			cout << var << "₁" << "=" << sol.solutions[0].sol.imaginary.real << (sol.solutions[0].sol.imaginary.imaginary < 0 ? "" : "+") << sol.solutions[0].sol.imaginary.imaginary << "i" << endl;
-		
-			cout << var << "₂" << "=" << sol.solutions[1].sol.imaginary.real << (sol.solutions[1].sol.imaginary.imaginary < 0 ?"" : "+") << sol.solutions[1].sol.imaginary.imaginary << "i" << endl;
-		}
-		else
-		{
-			cout << "Discriminant is strictly positive, the two real solutions are:" << endl;
-			cout << var << "₁" << "=" << sol.solutions[0].sol.real << endl;
-			cout << var << "₂" << "=" << sol.solutions[1].sol.real << endl;
-		}
-	}
-	else if (max_grade == 1)
-	{
-		cout << "The solution is:" << endl;
-		cout << var << "=" << sol.solutions[0].sol.real << endl;
-	}
-	else
-		cout << "The polynomial degree is strictly grater than 2, I can't solve." << endl;
 	return 0;
 }

@@ -6,7 +6,7 @@ vector<monomio> go_div(vector<monomio> ecuacion)
 
 	if (ecuacion[0].value == 1)
 		return ecuacion;
-	tmp.ini_monomio("/", 0, -1, 0, 0);
+	tmp.ini_monomio("/", 0, -1, 0);
 	ecuacion.push_back(tmp);
 	ecuacion.push_back(ecuacion[ecuacion.size() - 2]);
 	ecuacion.back().value = ecuacion[0].value;

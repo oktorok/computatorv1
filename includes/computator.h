@@ -48,6 +48,7 @@ typedef struct solution_s {
 typedef struct output_s {
 	vector<solution_t> solutions;
 	vector<string> steps;
+	vector<string> guide;
 } output_t;
 
 class monomio {
@@ -58,32 +59,26 @@ private:
 public:
 	double value;
 	short sign;
-	short side;
-
-	
 	
 	monomio()
 	{
 		variable = "";
 		grade = 0;
 		sign = 1;
-		side = 1;
 		value = 0;
 	}
 
-	monomio(const monomio &src)
+	monomio copy_monomio()
 	{
-		this->sign = src.sign;
-		this->side = src.side;
-		this->value = src.value;
-		this->variable = src.variable;
-		this->grade = src.grade;
-	}
+		monomio t;
 
-	void ini_monomio(string var, double val, int gra, short val_sign, short val_side)
+		t.ini_monomio(this->variable, this->value, this->grade, this->sign);
+		return t;
+	}
+	
+	void ini_monomio(string var, double val, int gra, short val_sign)
 	{
 		this->sign = val_sign;
-		this->side = val_side;
 		this->value = val;
 		this->variable = var;
 		this->grade = gra;
@@ -130,6 +125,6 @@ output_t solv_first_grade(vector<monomio>, output_t, int);
 output_t simple_solve(vector<monomio>, output_t, int);
 output_t normal_solve(vector<monomio>, output_t, int);
 complex_solution_t create_complex(vector<monomio>);
-string printer(vector<monomio>, string *);
+string printer(vector<monomio>);
 double mySqrt(double);
 #endif
