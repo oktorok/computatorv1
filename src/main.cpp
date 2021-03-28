@@ -88,7 +88,10 @@ void pretty_print_sols(int flags, output_t sol, vector<monomio> expresiones, int
 		}
 		else
 		{
-			cout << "Discriminant is strictly positive, the two real solutions are:" << endl;
+			if (sol.solutions[0].sol.real == sol.solutions[1].sol.real)
+				cout << "Discriminant is zero, the two real solutions are:" << endl;
+			else
+				cout << "Discriminant is strictly positive, the two real solutions are:" << endl;
 			cout << var << "₁" << "=" << sol.solutions[0].sol.real << endl;
 			cout << var << "₂" << "=" << sol.solutions[1].sol.real << endl;
 		}
@@ -130,7 +133,7 @@ int main(int argc, char **argv) {
 	{
 		for (size_t j=i; j < expresiones.size();j++)
 		{
-			if (expresiones[i].get_variable() != "" && expresiones[i].get_variable() != "=" && expresiones[j].get_variable() != "" && expresiones[j].get_variable() != "=" && expresiones[i].get_variable() != expresiones[j].get_variable())
+			if (isalpha(expresiones[i].get_variable()[0]) && isalpha(expresiones[j].get_variable()[0]) && expresiones[i].get_variable() != expresiones[j].get_variable())
 			{
 				cout << "Multiple variables, i can't solve this" << endl;
 				return 1;
