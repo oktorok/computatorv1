@@ -6,7 +6,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	monomio zero;
 	monomio equal;
 	int grade, side=1;
-	size_t equal_set = -1;
+	size_t equal_set = 0;
 	vector<int> watched;
 
 	
@@ -32,7 +32,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 		if (sorted.size() == equal_set)
 		{
 			sorted.push_back(equal);
-			equal_set = -1;
+			equal_set = 0;
 		}
 		side = 1;
 		for (size_t i=0; i <= expresiones.size(); i++)
@@ -50,7 +50,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 				if (!expresiones[i].value)
 					continue;
 				//if (grade > 1)
-				expresiones[i].sign *= side;
+				expresiones[i].sign *= side * (equal_set > 0 ? 1 : -1);
 				sorted.push_back(expresiones[i]);
 				watched.push_back(i);
 				break;
@@ -67,15 +67,32 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	return sorted;
 }
 
-static vector<monomio> simplify_expresion(vector<monomio> expresiones)
+static vector<monomio> simplify_expresion(vector<monomio> expresiones, int &max_grade)
 {
 	monomio *actual, tmp;
-	int max_grade = 0, grade_act, sideA = 1, sideT = 1;
+	int grade_act, sideA = 1, sideT = 1;
 	string t = "00";
 	
 	for (size_t i=0; i < expresiones.size(); i++)
 	{
 		actual = &expresiones[i];
+		if (!actual->value && actual->get_grade() > 0)
+		{
+			if (actual->get_grade() == max_grade)
+			{
+				max_grade = 0;
+				for (size_t j=0; j < expresiones.size(); j++)
+				{
+					if (j == i)
+						continue;
+					if (expresiones[j].get_grade() > max_grade)
+						max_grade = expresiones[j].get_grade();
+				}
+			}
+			expresiones.erase(expresiones.begin() + i--);
+					
+			continue;
+		}
 		grade_act = actual->get_grade();
 		if (actual->get_variable() == "=")
 			sideA = -1;
@@ -89,7 +106,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				max_grade = grade_act;
 			if (grade_act != tmp.get_grade())
 				continue;
-			if (grade_act == tmp.get_grade())
+			if (grade_act == tmp.get_grade() && actual->get_variable() == tmp.get_variable())
 			{
 				if (sideA != sideT)
 					actual->value = actual->value * actual->sign - tmp.value * tmp.sign;
@@ -98,7 +115,10 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 				expresiones.erase(expresiones.begin() + j);
 				if (!actual->value)
 				{
-					expresiones.erase(expresiones.begin() + i--);
+					if (actual->get_grade() == max_grade)
+						max_grade = 0;
+					expresiones.erase(expresiones.begin() + i);
+					i = -1;
 					break;
 				}
 				else if (signbit(actual->value))
@@ -107,8 +127,6 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 					actual->sign = 1;
 				j = i;
 			}
-			else
-				break;
 		}
 	}
 	if (expresiones.back().get_grade() == -1)
@@ -124,12 +142,10 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones)
 	return expresiones;
 }
 
-output_t computatorv1(vector<monomio> &expresiones, int max_grade, int flags)
+output_t computatorv1(vector<monomio> &expresiones, int &max_grade, int flags)
 {
-	output_t sol;
-	string result;
+	output_t sol, othersols;
 	vector<monomio> reduced;
-	
 	//sol = new solution_t();
 	vector<string> legends;
 	vector<string> steps;
@@ -145,8 +161,7 @@ output_t computatorv1(vector<monomio> &expresiones, int max_grade, int flags)
 		legends.push_back("Solving Fractions:");
 		steps.push_back(printer(expresiones));
 	}
-
-	expresiones = simplify_expresion(expresiones);
+	expresiones = simplify_expresion(expresiones, max_grade);
 	if (flags & STEPS)
 	{
 		legends.push_back("Simplifying Expression:");
@@ -158,7 +173,6 @@ output_t computatorv1(vector<monomio> &expresiones, int max_grade, int flags)
 		sol.steps = steps;
 		return sol;
 	}
-
 	expresiones = sort_expresion(expresiones, max_grade);
 	if (flags & STEPS)
 	{

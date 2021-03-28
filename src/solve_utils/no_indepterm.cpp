@@ -15,6 +15,8 @@ output_t no_indepterm(vector<monomio> ecuacion, output_t solution, int flags)
 	string var;
 	output_t tmp;
 	solution_t sol;
+	int grade_one;
+
 	
 	var = ecuacion[0].get_variable();
 	ecuacion[0].set_grade(1);
@@ -43,9 +45,8 @@ output_t no_indepterm(vector<monomio> ecuacion, output_t solution, int flags)
 		solution.guide.push_back("Ecuation for Second Solution:");
 		solution.steps.push_back(printer(ecuacion));
 	}
-	tmp = computatorv1(ecuacion, 1, STEPS);
-
-
+	grade_one = 1;
+	tmp = computatorv1(ecuacion, grade_one, STEPS);
 	solution.solutions.insert(solution.solutions.end(), tmp.solutions.begin(), tmp.solutions.end());
 	if (flags & STEPS)
 	{

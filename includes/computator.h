@@ -117,7 +117,7 @@ monomio calc_num(monomio, monomio, bool);
 int take_grade(int &, string);
 string take_var(int &, string);
 double take_value(int &, string);
-output_t computatorv1(vector<monomio> &, int, int);
+output_t computatorv1(vector<monomio> &, int &, int);
 output_t solve(vector<monomio> , output_t, int);
 output_t no_indepterm(vector<monomio>, output_t, int);
 vector<monomio> solve_fractions(vector<monomio>);

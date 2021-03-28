@@ -112,6 +112,7 @@ int main(int argc, char **argv) {
 	
 
 	setlocale(LC_ALL, "");
+	setlocale(LC_NUMERIC, "C");
 	if (argc == 1)
 	{
 		cout << "No expression found" << endl;
@@ -125,6 +126,18 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	expresiones = parsing3(argv[argc - 1], max_grade);
+	for (size_t i=0; i < expresiones.size();i++)
+	{
+		for (size_t j=i; j < expresiones.size();j++)
+		{
+			if (expresiones[i].get_variable() != "" && expresiones[i].get_variable() != "=" && expresiones[j].get_variable() != "" && expresiones[j].get_variable() != "=" && expresiones[i].get_variable() != expresiones[j].get_variable())
+			{
+				cout << "Multiple variables, i can't solve this" << endl;
+				return 1;
+			}
+			
+		}
+	}
 	if (!expresiones.size())
 	{
 		cout << "The expression \"" << argv[argc - 1] <<"\" is not a well formed polynomial expression" << endl;

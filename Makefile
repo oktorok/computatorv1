@@ -1,4 +1,4 @@
-NAME = computator
+NAME = computor
 CPPFLAGS = -Wall -Wextra -Werror
 CC = g++
 

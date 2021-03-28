@@ -23,9 +23,11 @@ output_t solv_first_grade(vector<monomio> ecuacion, output_t solution, int flags
 	{
 		ecuacion[2].sign *= -1;
 		ecuacion[0].sign = 1;
-        }
+    }
 	sol.imaginary = false;
 	sol.sol.real = ecuacion.back().value;
+	if (sol.sol.real)
+		sol.sol.real *= ecuacion.back().sign;
 	solution.solutions.push_back(sol);
 	return solution;
 }

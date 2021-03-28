@@ -4,7 +4,7 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 {
 	fraction_str_t fraction;
 	stringstream tmpss;
-	int num_length, den_length;
+	int num_length, den_length, longer;
 	static int cuant_write;
 
 	if (reset_cuant)
@@ -38,13 +38,14 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	tmpss << ecuacion[slash + 1].value * ecuacion[slash + 1].sign;
 	den_length = tmpss.str().size();
 	tmpss.str("");
-	cuant_write = (num_length > den_length ? num_length : den_length);
-	for (int j = 0; j < cuant_write; j++)
+	longer = (num_length > den_length ? num_length : den_length);
+	for (int j = 0; j < longer; j++)
 	{
 		fraction.middle << "―";
-		if (j < (cuant_write - num_length) / 2)
+		cuant_write++;
+		if (j < (longer - num_length) / 2)
 			fraction.up << " ";
-		if (j < (cuant_write - den_length) / 2)
+		if (j < (longer - den_length) / 2)
 			fraction.down << " ";
 	}
 	fraction.up << ecuacion[slash - 1].value * ecuacion[slash - 1].sign;
@@ -73,7 +74,7 @@ string printer (vector<monomio> ecuacion)
 			i += iplus;
 			continue;
 		}
-		if (i + 1 < ecuacion.size() && ecuacion[i + 1].get_variable() == "/")
+		if (i + 1 < mon_cuant && ecuacion[i + 1].get_variable() == "/")
 		{
 			tmpfra.middle.str("");
 			tmpfra.middle << ss.str();
