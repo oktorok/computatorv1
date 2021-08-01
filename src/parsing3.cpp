@@ -71,7 +71,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				if (var != "")
 				{
 					cout << "Variable on fraction not implemented" << endl;
-					return (vector<monomio>){};
+					return vector<monomio>();
 				}
 				add = 2;
 				tmp.ini_monomio("/", 0, -1, 0);
@@ -88,7 +88,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			if (value_set)
 			{
 				cout << "Coefficient as expression not implemented" << endl;
-				return (vector<monomio>){};
+				return vector<monomio>();
 			}
 			if (exist_equal > 0)
 				equal_set = true;
@@ -109,12 +109,12 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			if (var == "")
 			{
 				cout << "No variable for exponent available" << endl;
-				return (vector<monomio>){};
+				return vector<monomio>();
 			}
 			if (!isdigit(expresion[i + 1]))
 			{
 				cout << "No value for exponent available" << endl;
-				return (vector<monomio>){};
+				return vector<monomio>();
 			}
 			grade = take_grade(i, expresion);
 			if (!grade)
@@ -126,13 +126,13 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			if (var != "" || !value_set)
 			{
 				cout << "Product only available for coefficients" << endl;
-				return (vector<monomio>){};
+				return vector<monomio>();
 			}
 			i++;
 			break;
 		default:
 
-			return (vector<monomio>){};
+			return vector<monomio>();
 		}
 		add = (add ? add - 1 : 0);
 	}
@@ -142,12 +142,12 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			cout << "Missing equality" << endl;
 		else if (exist_equal > 1)
 			cout << "Multiple equalities" << endl;
-		return (vector<monomio>){};
+		return vector<monomio>();
 	}
 	else if (!equal_set)
 	{
 		cout << "Missing right equal side" << endl;
-		return (vector<monomio>){};
+		return vector<monomio>();
 	}
 	tmp.ini_monomio(var, value, grade, sign);
 	ecuacion.push_back(tmp);

@@ -8,7 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <vector>
-#include <cmath>
+// #include <cmath>
 //#include <bits/stdc++.h>
 #include <algorithm>
 

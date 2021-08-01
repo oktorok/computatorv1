@@ -121,7 +121,7 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones, int &max_
 					i = -1;
 					break;
 				}
-				else if (signbit(actual->value))
+				else if (actual->value < 0)
 					actual->value *= (actual->sign = -1);
 				else
 					actual->sign = 1;

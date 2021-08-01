@@ -1,6 +1,6 @@
 NAME = computor
 CPPFLAGS = -Wall -Wextra -Werror
-CC = g++
+CC = g++ -std=c++11
 
 SRC =	main.cpp \
 	myPow.cpp \

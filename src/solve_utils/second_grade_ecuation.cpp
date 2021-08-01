@@ -15,7 +15,7 @@ monomio calc_num(monomio sumand, monomio radicand, bool sum)
 	
 	num.value = sumand.value * sumand.sign + radicand.value * radicand.sign * (sum ? 1 : -1);
 	num.sign = -1;
-	if (signbit(num.value))
+	if (num.value < 0)
 		num.value *= -1;
 	else
 		num.sign = 1;
@@ -58,7 +58,7 @@ monomio calc_radicand(monomio a, monomio b, monomio c)
 	r = radicandright(a, c);
 	radicand.value = l.value - r.value * r.sign;
 	radicand.sign = -1;
-	if (signbit(radicand.value))
+	if (radicand.value < 0)
 		radicand.value *= -1;
 	else
 		radicand.sign = 1;
