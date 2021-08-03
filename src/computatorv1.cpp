@@ -93,6 +93,8 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones, int &max_
 					
 			continue;
 		}
+		else if (!actual->value && actual->sign == -1)
+			actual->sign = 1;
 		grade_act = actual->get_grade();
 		if (actual->get_variable() == "=")
 			sideA = -1;

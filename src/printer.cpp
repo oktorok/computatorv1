@@ -28,9 +28,9 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 		num_length -= 2;
 		den_length -= 2;
 	}
-	for (int j = 0; j < num_length; j++)
+	for (int j = 0; j < num_length - 1; j++)
 		fraction.up << " ";
-	for (int j = 0; j < den_length; j++)
+	for (int j = 0; j < den_length - 1; j++)
 		fraction.down << " ";
 	tmpss << ecuacion[slash - 1].value * ecuacion[slash - 1].sign;
 	num_length = tmpss.str().size();
@@ -119,13 +119,12 @@ string printer (vector<monomio> ecuacion)
 		}
 		i += iplus;
 	}
-	if (fraction.up.rdbuf()->in_avail())
+	if (fraction.up.str()[0])
 	{
 		fraction.up << endl;
 	        ss << endl;
 		fraction.up << ss.str() << fraction.down.str();
 		return fraction.up.str();
 	}
-	
 	return ss.str();
 }

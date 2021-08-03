@@ -2,10 +2,10 @@
 
 static output_t solv_second_grade(vector<monomio> ecuacion, output_t solution, int flags)
 {
-	if (ecuacion.size() == 3)
-		solution = simple_solve(ecuacion, solution, flags);
-	else if (ecuacion[2].value && !ecuacion[2].get_grade())
+	if (ecuacion.size() == 5)
 		solution = normal_solve(ecuacion, solution, flags);
+	else if (!ecuacion[1].get_grade())
+		solution = simple_solve(ecuacion, solution, flags);
 	else
 		solution = no_indepterm(ecuacion, solution, flags);
 
