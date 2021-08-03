@@ -15,9 +15,6 @@ double check_fast_sol(double num)
 	while (res * res < num)
 		res++;
 	return res;
-	if (res * res == num)
-		return res;
-	return res;
 }
 
 double mySqrt(double num)
@@ -39,7 +36,6 @@ double mySqrt(double num)
 	}
 	while (myAbs(num - (res * res)) > SQR_ERR)
 	{
-		cout << "RES = " << res << endl;
 		res_sqr = res * res;
 		res = (res_sqr * (6 * num + res_sqr) + num * num)/(4 * res * (res_sqr + num));
 	}		
