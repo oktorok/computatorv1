@@ -8,6 +8,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	int grade, side=1, tmp_maxgrade;
 	vector<int> watched;
 
+	cout << printer(expresiones) << endl;
 	tmp_maxgrade = max_grade;
 	equal.ini_monomio("=", 0, -1, 0);
 	while (max_grade > -1)
@@ -29,7 +30,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 					continue;
 				//if (grade > 1)
 				expresiones[i].sign *= side;
-				if (expresiones[i].get_variable() == "" && tmp_maxgrade == 1)
+				if (sorted.size() && expresiones[i].get_variable() == "" && tmp_maxgrade == 1)
 				{
 					sorted.push_back(equal);
 					expresiones[i].sign *= -1;
@@ -40,7 +41,8 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			}
 		}
 	}
-	if ((sorted.back().value != 0 && tmp_maxgrade == 2) ||sorted.size() == 1)
+	cout << printer(sorted) << endl;
+	if ((sorted.back().value != 0 && tmp_maxgrade == 2) || sorted.size() == 1)
 	{
 		zero.ini_monomio("", 0, 0, 1);
 		sorted.push_back(equal);
