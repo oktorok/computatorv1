@@ -131,12 +131,17 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				cout << "No variable for exponent available" << endl;
 				return vector<monomio>();
 			}
-			if (!isdigit(expresion[i + 1]))
+			// if (!isdigit(expresion[i + 1]))
+			// {
+			// 	cout << "No value for exponent available" << endl;
+			// 	return vector<monomio>();
+			// }
+			grade = take_grade(i, expresion);
+			if (grade < 0)
 			{
-				cout << "No value for exponent available" << endl;
+				cout << "Exponent not valid" << endl;
 				return vector<monomio>();
 			}
-			grade = take_grade(i, expresion);
 			if (!grade)
 				var = "";
 			if (grade > max_grade)
