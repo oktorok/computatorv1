@@ -49,11 +49,14 @@ static output_t real_sol(vector<monomio> ecuacion, output_t solution, int flags)
 		solution.steps.push_back(printer(ecuacion));
 	}
 	sol.imaginary = false;
-	sol.sol.real = ecuacion[2].value;	
+	sol.sol.real = ecuacion[2].value;
 	solution.solutions.push_back(sol);
 	ecuacion[2].value *= -1;
 	if (ecuacion[2].value == sol.sol.real)
+	{
+		solution.solutions.push_back(sol);
 		return solution;
+	}
 	ecuacion[0].set_variable(var + "₂");
 	if (flags & STEPS)
 	{
@@ -67,9 +70,9 @@ static output_t real_sol(vector<monomio> ecuacion, output_t solution, int flags)
 
 output_t simple_solve(vector<monomio> ecuacion, output_t solution, int flags)
 {
-	ecuacion[3].value = ecuacion[1].value;
-	ecuacion[3].sign = ecuacion[1].sign * -1;
-	ecuacion.erase(ecuacion.begin() + 1);
+	//ecuacion[3].value = ecuacion[1].value;
+	//ecuacion[3].sign = ecuacion[1].sign * -1;
+	//ecuacion.erase(ecuacion.begin() + 1);
 	if (ecuacion[0].value != 1)
 	{
 		ecuacion = go_div(ecuacion);

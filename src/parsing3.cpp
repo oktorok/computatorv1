@@ -36,7 +36,7 @@ static int class_character(char a)
 vector<monomio> parsing3(string expresion, int &max_grade)
 {
 	vector<monomio> ecuacion;
-	int i = 0, expresion_l = expresion.length(), t, grade = 0;
+	int i = 0, expresion_l = expresion.length(), t, old_t, grade = 0;
 	short sign = 1;
 	string var = "";
 	double value = 1;
@@ -69,6 +69,11 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				if (!i)
 				{
 					cout << "No left side found" << endl;
+					return vector<monomio>();
+				}
+				else if (old_t == PRODUCT)
+				{
+					cout << "Missing product" << endl;
 					return vector<monomio>();
 				}
 				exist_equal += 1;
@@ -108,6 +113,11 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		case CHAR:
 			if (exist_equal > 0)
 				equal_set = true;
+			if (var != "")
+			{
+				cout << "No product between variables allowed" << endl;
+				return vector<monomio>();
+			}
 			var = take_var(i, expresion);
 			grade = 1;
 			break;
@@ -133,11 +143,11 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				max_grade = grade;
 			break;
 		case PRODUCT:
-			if (var != "" || !value_set)
-			{
-				cout << "Product only available for coefficients" << endl;
-				return vector<monomio>();
-			}
+			// if (var != "" || !value_set)
+			// {
+			// 	cout << "Product only available for coefficients" << endl;
+			// 	return vector<monomio>();
+			// }
 			i++;
 			break;
 		default:
@@ -145,6 +155,8 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			return vector<monomio>();
 		}
 		add = (add ? add - 1 : 0);
+		if (t != SPACE)
+			old_t = t;
 	}
 	if (exist_equal != 1)
 	{

@@ -5,35 +5,13 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 	vector<monomio> sorted;
 	monomio zero;
 	monomio equal;
-	int grade, side=1;
-	size_t equal_set = 0;
+	int grade, side=1, tmp_maxgrade;
 	vector<int> watched;
 
-	
+	tmp_maxgrade = max_grade;
 	equal.ini_monomio("=", 0, -1, 0);
-	switch (max_grade)
-	{
-	case 1:
-		equal_set = 1;
-		break;
-	case 2:
-		if (expresiones.size() - 1 == 2 && (expresiones.back().get_variable() == "" || expresiones.front().get_variable() == ""))
-			equal_set = 1;
-		//else if  (expresiones.size() - 1 == 2 && expresiones[1].get_variable() == "")
-		// 	equal_set = 1;
-		else
-			equal_set = 3;
-		break;
-	default:
-		equal_set = expresiones.size() - 1;
-	}
 	while (max_grade > -1)
 	{
-		if (sorted.size() == equal_set)
-		{
-			sorted.push_back(equal);
-			equal_set = 0;
-		}
 		side = 1;
 		for (size_t i=0; i <= expresiones.size(); i++)
 		{
@@ -50,18 +28,22 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 				if (!expresiones[i].value)
 					continue;
 				//if (grade > 1)
-				expresiones[i].sign *= side * (equal_set > 0 ? 1 : -1);
+				expresiones[i].sign *= side;
+				if (expresiones[i].get_variable() == "" && tmp_maxgrade == 1)
+				{
+					sorted.push_back(equal);
+					expresiones[i].sign *= -1;
+				}
 				sorted.push_back(expresiones[i]);
 				watched.push_back(i);
 				break;
 			}
 		}
 	}
-	if (equal_set == (sorted.size() + 1))
-		sorted.push_back(equal);
-	if (sorted.back().get_grade() == -1)
+	if (sorted.back().value != 0 && tmp_maxgrade == 2)
 	{
 		zero.ini_monomio("", 0, 0, 1);
+		sorted.push_back(equal);
 		sorted.push_back(zero);
 	}
 	return sorted;
@@ -181,7 +163,7 @@ output_t computatorv1(vector<monomio> &expresiones, int &max_grade, int flags)
 		legends.push_back("Reordering monomies:");
 		steps.push_back(printer(expresiones));
 	}
-	// cout << printer(expresiones) << endl;
+	//expresiones = move_indepterm(expresiones);
 	reduced = expresiones;
 	sol.guide = legends;
 	sol.steps = steps;

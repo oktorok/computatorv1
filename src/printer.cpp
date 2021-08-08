@@ -18,7 +18,7 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 		fraction.middle << '+';
 	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
 	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
-	if (ecuacion.size() > 5 && ecuacion[5].get_variable().find("±") != (size_t)-1)
+	if ((ecuacion.size() > 5 && ecuacion[5].get_variable().find("±") != (size_t)-1 )|| ecuacion[0].get_grade() == 2)
 	{
 		num_length -= 1;
 		den_length -= 1;
