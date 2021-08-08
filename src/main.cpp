@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
 	flags = set_flags(argc, argv);
 	if (flags & HELP)
 	{
-		cout << "Usage: ./computator [OPTIONS] [EXPRESSION]" << endl << "\t-s Show steps." << endl; 
+		cout << "Usage: ./computator [OPTIONS] [EXPRESSION]" << endl << "\t-s Show steps." << endl;
 		return 1;
 	}
 	expresiones = parsing3(argv[argc - 1], max_grade);
