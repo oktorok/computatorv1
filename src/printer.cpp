@@ -43,12 +43,12 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	{
 		fraction.middle << "―";
 		cuant_write++;
-		if (j < (longer - num_length) / 2)
+		if (j <= (longer - num_length) / 2)
 			fraction.up << " ";
-		if (j < (longer - den_length) / 2)
+		if (j <= (longer - den_length) / 2)
 			fraction.down << " ";
 	}
-	fraction.up << ecuacion[slash - 1].value * ecuacion[slash - 1].sign;
+	fraction.up << ecuacion[slash - 1].value * ecuacion[slash - 1].sign ;
 	fraction.down << ecuacion[slash + 1].value * ecuacion[slash + 1].sign;
 	fraction.middle << ecuacion[slash + 1].get_variable();
 	return fraction;

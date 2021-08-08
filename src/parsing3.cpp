@@ -55,12 +55,22 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		case OPERATION:
 			if (i && !add)
 			{
+				if (!value_set && var == "")
+				{
+					cout << "No value neither variable detected" << endl;
+					return vector<monomio>();
+				}
 				tmp.ini_monomio(var, value, grade, sign);
 				ecuacion.push_back(tmp);
 				value_set = false;
 			}
 			if (t == EQUAL)
 			{
+				if (!i)
+				{
+					cout << "No left side found" << endl;
+					return vector<monomio>();
+				}
 				exist_equal += 1;
 				add = 2;
 				tmp.ini_monomio("=", 0, -1, 0);

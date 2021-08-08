@@ -104,8 +104,8 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones, int &max_
  			tmp = expresiones[j].copy_monomio();
 			if (tmp.get_variable() == "=" || sideA < 0)
 				sideT = -1;
-			if (grade_act > max_grade)
-				max_grade = grade_act;
+			if (tmp.get_grade() > max_grade)
+				max_grade = tmp.get_grade();
 			if (grade_act != tmp.get_grade())
 				continue;
 			if (grade_act == tmp.get_grade() && actual->get_variable() == tmp.get_variable())
