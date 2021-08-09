@@ -2,9 +2,9 @@
 
 vector<monomio> solve_fractions(vector<monomio> expresiones)
 {
-	vector<monomio>::iterator it1, it2;
+	vector<monomio>::iterator it1;
 	monomio num, *den;
-	
+
 	for (size_t i=1; i < expresiones.size(); i++)
 	{
 		if (expresiones[i].get_variable() == "/")
@@ -22,10 +22,11 @@ vector<monomio> solve_fractions(vector<monomio> expresiones)
 			else
 				den->sign = 1;
 			it1 = expresiones.begin() + i - 1;
-			it2 = it1 + 2;
-			expresiones.erase(it1, it2);
+			expresiones.erase(it1);
+			expresiones.erase(it1);
 			i--;
 		}
 	}
+	
 	return expresiones;
 }

@@ -4,7 +4,7 @@ static output_t solv_second_grade(vector<monomio> ecuacion, output_t solution, i
 {
 	if (ecuacion.size() == 5)
 		solution = normal_solve(ecuacion, solution, flags);
-	else if (ecuacion[1].get_grade() == 0 && ecuacion[0].get_grade() == 2)
+	else if ((ecuacion[1].get_grade() == 0 || ecuacion[1].get_variable() == "=") && ecuacion[0].get_grade() == 2)
 		solution = simple_solve(ecuacion, solution, flags);
 	else
 		solution = no_indepterm(ecuacion, solution, flags);

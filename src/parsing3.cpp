@@ -65,6 +65,8 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 					cout << "No value neither variable detected" << endl;
 					return vector<monomio>();
 				}
+				if (!value && sign == -1)
+					sign = 1;
 				tmp.ini_monomio(var, value, grade, sign);
 				ecuacion.push_back(tmp);
 				value_set = false;

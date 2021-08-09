@@ -12,13 +12,16 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	fraction.up << last.up.str();
 	fraction.middle << last.middle.str();
 	fraction.down << last.down.str();
-	if (sign && ecuacion[slash - 1].sign < 0)
-		fraction.middle << '-';
-	else if (sign)
-		fraction.middle << '+';
+        if (sign)
+                fraction.middle << '+';
 	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
 	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
-	cout << num_length << " ---- " << den_length << endl;
+	if (fraction.middle.str().size())
+	{
+		num_length += 1;
+		den_length += 1;
+	}
+	
 	if ((ecuacion.size() > 5 && ecuacion[5].get_variable().find("±") != (size_t)-1 )|| ecuacion[0].get_grade() == 2)
 	{
 		num_length -= 1;
@@ -26,8 +29,8 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	}
 	if (ecuacion.size() == 5 && (ecuacion[0].get_variable().find("₁") != (size_t) - 1 || ecuacion[0].get_variable().find("₂") != (size_t) - 1))
 	{
-		num_length -= 1;
-		den_length -= 1;
+		num_length -= 2;
+		den_length -= 2;
 	}
 	for (int j = 0; j < num_length - 1; j++)
 		fraction.up << " ";
@@ -40,6 +43,7 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	den_length = tmpss.str().size();
 	tmpss.str("");
 	longer = (num_length > den_length ? num_length : den_length);
+	cout << num_length << " --- " << den_length << endl;
 	for (int j = 0; j < longer; j++)
 	{
 		fraction.middle << "―";
