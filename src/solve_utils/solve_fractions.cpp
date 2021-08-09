@@ -11,6 +11,11 @@ vector<monomio> solve_fractions(vector<monomio> expresiones)
 		{
 			num = expresiones[i - 1];
 			den = &expresiones[i + 1];
+			if (!den->value)
+			{
+				cout << "Division by zero not allowed" << endl;
+				exit(-1);
+			}
 			den->value = num.value/den->value;
 			if (num.value)
 				den->sign *= num.sign;
