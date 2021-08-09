@@ -53,6 +53,11 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 		case SLASH:
 		case EQUAL:
 		case OPERATION:
+			if (old_t == PRODUCT)
+			{
+				cout << "Product not valid" << endl;
+				return vector<monomio>();
+			}
 			if (i && !add)
 			{
 				if (!value_set && var == "")
@@ -95,6 +100,11 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			sign = 1;
 			if (expresion[i++] == '-')
 				sign = -1;
+			if (i >= expresion_l)
+			{
+				cout << "No value detected" << endl;
+				return vector<monomio>();
+			}
 			grade = 0;
 			var = "";
 			value = 1;
@@ -143,16 +153,15 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				return vector<monomio>();
 			}
 			if (!grade)
+			{
 				var = "";
+				value = 1;
+				value_set = true;
+			}
 			if (grade > max_grade)
 				max_grade = grade;
 			break;
 		case PRODUCT:
-			// if (var != "" || !value_set)
-			// {
-			// 	cout << "Product only available for coefficients" << endl;
-			// 	return vector<monomio>();
-			// }
 			i++;
 			break;
 		default:
