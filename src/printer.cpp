@@ -4,25 +4,38 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 {
 	fraction_str_t fraction;
 	stringstream tmpss;
-	int num_length, den_length, longer;
+	int num_length, den_length, longer, grade;
 	static int cuant_write = 0;
+	static int grade_unicode = 0;
 
 	if (reset_cuant)
+	{
+		grade_unicode = 0;
 		cuant_write = 0;
+	}
 	fraction.up << last.up.str();
 	fraction.middle << last.middle.str();
 	fraction.down << last.down.str();
         if (sign)
                 fraction.middle << '+';
-	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2;
-	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2;
+	grade = ecuacion[slash - 2].get_grade();
+	if (slash > 1 && grade > 1)
+	{
+		if (grade < 4)
+			grade_unicode += 1;
+
+		else if (grade >= 4 && grade <= 9)
+			grade_unicode += 2;
+	}
+	num_length = fraction.middle.str().size() - fraction.up.str().size() - cuant_write * 2 - grade_unicode;
+	den_length = fraction.middle.str().size() - fraction.down.str().size() - cuant_write * 2 - grade_unicode;
 	if (fraction.middle.str().size())
 	{
 		num_length += 1;
 		den_length += 1;
 	}
 	
-	if ((ecuacion.size() > 5 && ecuacion[5].get_variable().find("±") != (size_t)-1 )|| ecuacion[0].get_grade() == 2)
+	if ((ecuacion.size() > 5 && ecuacion[5].get_variable().find("±") != (size_t)-1 ))
 	{
 		num_length -= 1;
 		den_length -= 1;
@@ -43,7 +56,6 @@ static fraction_str_t print_fraction(vector<monomio> ecuacion, int slash, bool s
 	den_length = tmpss.str().size();
 	tmpss.str("");
 	longer = (num_length > den_length ? num_length : den_length);
-	cout << num_length << " --- " << den_length << endl;
 	for (int j = 0; j < longer; j++)
 	{
 		fraction.middle << "―";
@@ -116,12 +128,14 @@ string printer (vector<monomio> ecuacion)
 			tmp[1] += grade - 2;
 			ss << tmp;
 		}
-		else if (grade >= 4)
+		else if (grade >= 4 && grade <= 9)
 		{
 			tmp = SUPERINDEX_4;
 			tmp[2] += grade - 4;
 			ss << tmp;
 		}
+		else if (grade > 9)
+			ss << "^" << grade;
 		i += iplus;
 	}
 	if (fraction.up.str()[0])

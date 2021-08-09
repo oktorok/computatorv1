@@ -1,4 +1,5 @@
 #include "computator.h"
+#include <iomanip>
 
 static double myAbs(double num)
 {
@@ -21,6 +22,7 @@ double mySqrt(double num)
 {
 	double res;
 	double res_sqr;
+	int iter = 0;
 
 	res = check_fast_sol(num);
 	if (res * res == num)
@@ -38,6 +40,9 @@ double mySqrt(double num)
 	{
 		res_sqr = res * res;
 		res = (res_sqr * (6 * num + res_sqr) + num * num)/(4 * res * (res_sqr + num));
-	}		
+		iter += 1;
+		if (res * res == res_sqr)
+			break ;
+	}
 	return res;
 }

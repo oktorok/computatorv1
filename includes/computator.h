@@ -13,7 +13,7 @@
 
 
 
-#define SQR_ERR 0.001
+#define SQR_ERR 0.0001
 #define SUPERINDEX_2 "\u00B2"
 #define SUPERINDEX_4 "\u2074"
 #define STEPS 1 << ('s' - 'a')
