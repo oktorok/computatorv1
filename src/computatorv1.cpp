@@ -84,10 +84,13 @@ static vector<monomio> simplify_expresion(vector<monomio> expresiones, int &max_
 		for (size_t j=i + 1; j < expresiones.size(); j++)
 		{
  			tmp = expresiones[j].copy_monomio();
+			//cout << "max_grade: " << max_grade << ", tmp grade = "<< tmp.get_grade() << ", actual grade = " << actual->get_grade() << endl;
 			if (tmp.get_variable() == "=" || sideA < 0)
 				sideT = -1;
 			if (tmp.get_grade() > max_grade)
 				max_grade = tmp.get_grade();
+			else if (actual->get_grade() > max_grade)
+				max_grade = actual->get_grade();
 			if (grade_act != tmp.get_grade())
 				continue;
 			if (grade_act == tmp.get_grade() && actual->get_variable() == tmp.get_variable())
