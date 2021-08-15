@@ -40,7 +40,7 @@ static vector<monomio> sort_expresion(vector<monomio> expresiones, int max_grade
 			}
 		}
 	}
-	if ((sorted.back().value != 0 && tmp_maxgrade == 2) || sorted.size() == 1)
+	if ((sorted.back().value != 0 && tmp_maxgrade >= 2) || sorted.size() == 1)
 	{
 		zero.ini_monomio("", 0, 0, 1);
 		sorted.push_back(equal);

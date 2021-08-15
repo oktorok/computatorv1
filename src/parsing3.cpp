@@ -157,7 +157,6 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 			if (!grade)
 			{
 				var = "";
-				value = 1;
 				value_set = true;
 			}
 			if (grade > max_grade)
