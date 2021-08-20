@@ -45,6 +45,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 	monomio tmp;
 
 	max_grade = 1;
+	old_t = SPACE;
 	while(i < expresion_l)
 	{
 		t = class_character(expresion[i]);
@@ -58,7 +59,7 @@ vector<monomio> parsing3(string expresion, int &max_grade)
 				cout << "Product not valid" << endl;
 				return vector<monomio>();
 			}
-			if (i && !add)
+			if (i && !add && old_t != SPACE)
 			{
 				if (!value_set && var == "")
 				{
